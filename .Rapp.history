@@ -1,0 +1,284 @@
+data(Orange)
+?Orange
+OrangeData = data.frame(Orange)
+attach(OrangeData)
+CirModel = aov(circumference ~ Tree)#
+ANOVATable = summary(CirModel)#
+str(ANOVATable)#
+p = ANOVATable[[1]][5][1,1]#
+#
+regModel = lm(circumference~Tree)#
+regANOVA = summary(regModel)#
+regANOVA$coefficients['Tree.Q','Pr(>|t|)']
+p
+?interaction.plot
+?loglm
+library(MASS)
+?loglm
+X = c('A','A','B','B')#
+Y = c('S','F','S','F')#
+count = c(20,20,20,40)
+2WayEx = as.data.frame(cbind(X,Y,count))
+?as.data.frame
+twoWayEx = as.data.frame(cbind(X,Y,count))
+twoWayEx
+library(MASS)#
+model = loglm(count~X+Y,twoWayEx)
+model
+?chisq
+?chi.test
+?chisq.test
+xmat = matrix(c(20,20,20,40),2,2)
+xmat
+chisq.test(xmat)
+summary(model)
+twoWayEx = as.data.frame(cbind(X,Y,as.numeric(count)))#
+#
+library(MASS)#
+model = loglm(count~X+Y,twoWayEx)
+model
+str(model)
+resid(model)
+plot.loglm(model,residuals_type="pearson")
+library(vcd)#
+plot.loglm(model,residuals_type="pearson")
+?plot.loglm
+plot.loglm(model,residuals_type="pearson")
+?plot.loglm
+plot(model,residuals_type="pearson")
+plot(model,panel=assoc,residuals_type="pearson")
+plot(model,panel=assoc,residuals_type="deviance")
+plot(model,panel=assoc,residuals_type="pearson")
+plot(model,panel=assoc,residuals_type="deviance")
+?glm
+model_glm = glm(count~X+Y,family=poisson)
+model_glm
+summary(model_glm)
+str(model_glm)
+summary(model_glm)
+model_glm$residuals
+resid(model_glm)
+resid(model)
+?resid
+?dnorm
+pnorm(1.96)
+pnorm(1.96,lower.tail=FALSE)
+z = c(15.2709,3.6017,3.5094,4.3288,7.0072,2.3157)
+2*pnorm(z,lower.tail=FALSE)
+exp(-0.312)
+?is.estimable
+?transform
+vec = c(0,1,2,3,4,5,6,7,8,9)
+tranform(vec)
+transform(vec)
+?sample
+sample(vec)
+library(MCMCglmm)
+?MCMCglmm
+vignette("CourseNotes", "MCMCglmm")
+?tapply
+?points
+?hist
+?lines
+?qqline
+?plot
+install.package(httpuv)
+install.packages(httpuv)
+data()
+data(ChickWeight)
+?ChickWeight
+pf(2.6936,5,354,lower.tail=FALSE)
+data()
+data(ldeaths)
+data(mdeaths)
+data(cars)
+?cars
+data(ldeaths)
+?ldeaths
+deaths = data.frame(ldeaths)
+deaths
+deaths = data.frame(mdeaths)
+deaths
+deaths = data.frame(uspop)
+deaths
+?rbinom
+X = c('A','A','B','B')#
+Y = c('S','F','S','F')#
+count = c(20,20,20,40)#
+#
+twoWayEx = as.data.frame(cbind(X,Y,as.numeric(count)))#
+## FIT LOGLINEAR MODEL ###
+#
+library(MASS)#
+model = loglm(count~X+Y,twoWayEx)#
+#
+model#
+#
+summary(model)#
+#
+resid(model)
+model_glm = glm(count~X+Y,family=poisson)#
+#
+model_glm#
+summary(model_glm)#
+str(model_glm)#
+#
+model_glm$residuals#
+resid(model_glm)
+sum(abs(model_glm$residuals))
+sum(abs(resid(model_glm)))
+model_glm$family$dev.resid
+sum((model_glm$residuals)^2)
+sum((resid(model_glm))^2)
+resid(model_glm)
+resid(model_glm)^2
+X = c('A','A','B','B')#
+Y = c('S','F','S','F')#
+count = c(20,20,20,40)#
+#
+twoWayEx = as.data.frame(cbind(X,Y,as.numeric(count)))
+model_glm = glm(count~X+Y,family=poisson)#
+#
+model_glm#
+summary(model_glm)
+model_glm$residuals
+library(AER)#
+dispersiontest(model_glm,trafo=1)
+X = c('A','A','B','B')#
+Y = c('S','F','S','F')#
+count = c(20,20,20,40)#
+#
+twoWayEx = as.data.frame(cbind(X,Y,as.numeric(count)))#
+## FIT LOGLINEAR MODEL ###
+#
+library(MASS)#
+model = loglm(count~X+Y,twoWayEx)#
+#
+model#
+#
+summary(model)#
+#
+resid(model) # DEVIANCE RESIDUALS ##
+## RESIDUALS: EASIRE WITH GLM ###
+#
+model_glm = glm(count~X+Y,family=poisson)#
+#
+model_glm#
+summary(model_glm)#
+str(model_glm)#
+#
+model_glm$residuals#
+resid(model_glm) # DEVIANCE RESIDUALS
+dispersiontest(model_glm,trafo=1)
+?interaction.plot
+?aov
+?mauchly.test
+?mlm
+?anova.mlm
+install.packages('glmmADMB')
+install.packages('pwr')
+library('pwr')
+?pwr.t.test
+pre = 12.3#
+post = 14.8#
+sd = 7.5#
+#
+d = (post-pre)/sd
+pwr.t.test(n=23,d=d,sig.level=0.05,type="paired",alternative="greater")
+pwr.t.test(n=23,d=d,sig.level=0.05,type="paired",alternative="two.sided")
+power = c(0.70,0.75,0.80,0.85,0.90,0.95)
+?pwr.t.test
+pwr.t.test(d=d,sig.level=0.05,power=power,type="paired",alternative="greater")
+?pwr.t.test
+?sapply
+sapply(power_values,FUN=pwr.t.test(d=d,sig.level=0.05,power=power_values,type="paired",alternative="greater"))
+power_values = c(0.70,0.75,0.80,0.85,0.90,0.95)
+sapply(power_values,FUN=pwr.t.test(d=d,sig.level=0.05,power=power_values,type="paired",alternative="greater"))
+sapply(power_values,FUN=function(x)pwr.t.test(d=d,sig.level=0.05,power=x,type="paired",alternative="greater"))
+sapply(power_values,FUN=function(x)pwr.t.test(d=d,sig.level=0.01,power=x,type="paired",alternative="greater"))
+5+3
+7-4
+9-22
+5  +    3
+5*3
+exp(1)
+sqrt(9)
+2^3
+a <- 4
+a
+a = 4
+a
+b = 3
+b
+a*b
+a/b
+c = a/b
+c
+a = c(1,2,3,4,5)
+a
+a[2]
+a[5]
+a*3
+a/5
+a+15
+b = 2*a
+b
+a*b
+a
+b
+a*b
+a %*% b
+A = matrix(c(1,2,3,4),2,2)#
+A
+B = matrix(c(1,2,3,4,5,6),2,3)#
+C = matrix(c(1,2,3,4,5,6),3,2)#
+B#
+C
+3*B
+C*B
+C %*% B
+ls()
+a
+B
+ls()
+a
+B
+A
+?read.table
+library(lme4)#
+library(lmerTest)
+install.packages("lmerTest")
+exp(0.045)
+exp(10*0.045)
+exp(0.156)
+exp(1.606)
+exp(-0.092)
+1-exp(-0.092)
+beta = c(-0.037,0.047,0.579,1.350,-0.041,0.138,-0.029,0.144,-0.065,-0.037,-0.159,0.151,-0.558,-0.027)
+exp(beta)
+data(WorldPhones)
+attach(WorldPhones)
+WorldPhones
+attach(as.data.frame(WorldPhones))
+phoneData = as.data.frame(WorldPhones)
+phoneData
+library(devtools)
+install.packages("devtools")
+install.packages("roxygen2")
+setwd('/Users/Lalonde/Documents/Trent/Work/Research/Programs/R Packages/')
+create("myfirstpackage")
+library(devtools)
+install.packages("digest")
+install.packages("devtools",dependencies=TRUE)
+library(devtools)
+install.packages("/Users/Lalonde/Desktop/digest_0.6.14.tgz",repos=NULL, type="source")
+library(devtools)
+library(roxygen2)
+setwd('/Users/Lalonde/Documents/Trent/Work/Research/Programs/R Packages/')
+create("myfirstpackage")
+setwd('./TSGMM/')
+document()
+?TSGMM
+?TSGMM_Ber
+document()
+?validMDBer_EC
