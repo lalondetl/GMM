@@ -20,7 +20,7 @@ TSGMM_Ber(yvec, subjectID, Zmat, Xmat, Tvec, N, mc = "EC",
 
 \item{N}{The number of subjects.}
 
-\item{mc}{The method of identifying appropriate moment conditions, either 'EC' for extended classification or 'Types' for user-identified types.}
+\item{mc}{The method of identifying appropriate moment conditions, either 'EC' for extended classification (default) or 'Types' for user-identified types.}
 
 \item{covTypeVec}{The vector indicating the type of each time-dependent covariate, according to the order of the columns of Xmat.}
 }

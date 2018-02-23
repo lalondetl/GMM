@@ -26,7 +26,7 @@ validMDBer_Types(yvec, subjectIndex, Zmat, Xmat, covTypeVec, betaI, T, Tmax)
 \item{N}{The number of subjects.}
 }
 \description{
-This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with binary outcomes.  It allows for unbalanced data, and uses user-defined types of time-dependent covariates to determine validity of moment conditions.  The function return a matrix of derivatives for all valid moment condition for subject i.
+This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with binary outcomes.  It allows for unbalanced data, and uses user-defined types of time-dependent covariates to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.
 }
 \examples{
 validMDBer_Types()

@@ -262,23 +262,17 @@ WorldPhones
 attach(as.data.frame(WorldPhones))
 phoneData = as.data.frame(WorldPhones)
 phoneData
-library(devtools)
-install.packages("devtools")
-install.packages("roxygen2")
-setwd('/Users/Lalonde/Documents/Trent/Work/Research/Programs/R Packages/')
-create("myfirstpackage")
-library(devtools)
-install.packages("digest")
-install.packages("devtools",dependencies=TRUE)
-library(devtools)
-install.packages("/Users/Lalonde/Desktop/digest_0.6.14.tgz",repos=NULL, type="source")
+?git
 library(devtools)
 library(roxygen2)
 setwd('/Users/Lalonde/Documents/Trent/Work/Research/Programs/R Packages/')
-create("myfirstpackage")
+create('PRNGeneration')
+setwd('./PRNGeneration/')
+document()
+?PRNGCorrBer
+setwd('/Users/Lalonde/Documents/Trent/Work/Research/Programs/R Packages/')
 setwd('./TSGMM/')
 document()
-?TSGMM
-?TSGMM_Ber
+?TSGMM_PP
 document()
-?validMDBer_EC
+?TSGMM_PP

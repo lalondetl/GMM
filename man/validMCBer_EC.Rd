@@ -26,7 +26,7 @@ validMCBer_EC(yvec, subjectIndex, Zmat, Xmat, betaI, T, Tmax, Count, types)
 \item{types}{A matrix indicating valid moment conditions for all time-dependent covariate parameters.}
 }
 \description{
-This function calculates the values of the valid moment conditions for a single subject in a longitudinal study with binary outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function return a vector of valid moment condition values for subject i, along with an updated count vector of the number of valid moment conditions.
+This function calculates the values of the valid moment conditions for a single subject in a longitudinal study with binary outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a vector of valid moment condition values for subject i, along with an updated count vector of the number of valid moment conditions.
 }
 \examples{
 validMCBer_EC()

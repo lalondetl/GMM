@@ -1,20 +1,23 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Bernoulli Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combinations for Logistic Component of Longitudinal Excess-Zero Responses, using Extended Classification
 #' 
-#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments using the extended classification method, applied to longitudinal data with binary outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
+#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments using the extended classification method, applied to the logistic component of a hurdle model for excess-zero longitudinal data.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.
-#' @param Zmat The design matrix for time-independent covariates.  
-#' @param Xmat The design matrix for time-dependent covariates.  
-#' @param betaI The current or initial estimates of the model parameters.  
+#' @param Zmat The design matrix for time-independent covariates ((N*T) x K0).  
+#' @param Xmat The design matrix for time-dependent covariates ((N*T) x Ktv).  
+#' @param betaI The current or initial estimates of the model parameters (1+K0+Ktv x 1).  
 #' @param Tvec The vector of times for each subject. 
-#' @param alpha The significance level for inclusion of moment conditions.  
+#' @param alpha The significance level for inclusion of moment conditions. 
+#' @param r The residuals from fitting an initial hurdle GEE model using the independent working correlation structure.   
 #' @keywords GMM
 #' @export
 #' @examples
-#' validComb_EC_Ber()
+#' validComb_EC_c0()
 
-validComb_EC_Ber = function(yvec,Zmat,Xmat,betaI,Tvec,alpha){
+
+
+validComb_EC_c0 = function(yvec,Zmat,Xmat,betaI,Tvec,alpha,r){
 
 ####################
 # DEFINE CONSTANTS #
@@ -47,14 +50,14 @@ for(i in 1:N)
 # MEAN AND SYSTEMATIC ESTIMATES #
 # NOTE: THIS IS SPECIFIC TO THE BERNOULLI #
 
-if(K0!=0){ZX = cbind(rep(1,nrow(Xmat)),Zmat,Xmat)}
+if(K0!=0){ZX = cbind(Zmat,Xmat)}
 if(K0==0){ZX = cbind(rep(1,nrow(Xmat)),Xmat)}
 
 eta = ZX %*% betaI
 mu = exp(eta)/(1+exp(eta))
 
 # RESIDUALS #
-r_raw = yvec - mu
+r_raw = r
 r = vector(mode="list",length=Tmax)
 for(t in 1:Tmax)
 {
@@ -73,6 +76,7 @@ types = matrix(0,Tmax,Tmax*Ktv)
 for(j in 1:Ktv)
 {
 	# FIND DERIVATIVES #
+	## SPECIFIC TO THE BERNOULLI!! ##
 	dBetamu_j_raw = mu*(1-mu)*Xmat[,j] 
 	d_j = vector(mode="list",length=Tmax)
 
@@ -118,7 +122,7 @@ for(j in 1:Ktv)
 
 types
 
-} # END validComb_EC_Ber #
+} # END validComb_EC_c0 #
 
 
 

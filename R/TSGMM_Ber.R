@@ -9,7 +9,7 @@
 #' @param Xmat The design matrix for time-dependent covariates.  
 #' @param Tvec The vector of times for each subject.  
 #' @param N The number of subjects.  
-#' @param mc The method of identifying appropriate moment conditions, either 'EC' for extended classification or 'Types' for user-identified types.  
+#' @param mc The method of identifying appropriate moment conditions, either 'EC' for extended classification (default) or 'Types' for user-identified types.  
 #' @param covTypeVec The vector indicating the type of each time-dependent covariate, according to the order of the columns of Xmat.  
 #' @keywords GMM
 #' @export

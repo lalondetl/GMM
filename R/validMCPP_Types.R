@@ -1,23 +1,24 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Bernoulli Responses, User-Defined Types
+#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Zero-Truncated Count Responses, User-Defined Types
 #' 
-#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments with user-defined types of time-dependent covariates, applied to longitudinal data with binary outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
+#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments with user-defined types of time-dependent covariates, applied to longitudinal data with zero-truncated count ("positive Poisson") outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.
-#' @param Zmat The design matrix for time-independent covariates.  
-#' @param Xmat The design matrix for time-dependent covariates.  
+#' @param Zmat The design matrix for time-independent covariates ((N*T) x K0).  
+#' @param Xmat The design matrix for time-dependent covariates ((N*T) x Ktv).  
 #' @param covTypeVec The vector indicating the type of each time-dependent covariate.  
-#' @param betaI The current or initial estimates of the model parameters.  
+#' @param betaI The current or initial estimates of the model parameters (1+K0+Ktv x 1).  
 #' @param T The number of time points for subject i.  
 #' @param Tmax The maximum number of times of observation among all subjects.  
 #' @param Count A vector of running counts of the number of valid moment conditions for all subjects.  
 #' @keywords GMM
 #' @export
 #' @examples
-#' validMCBer_Types()
+#' validMCPP_Types()
 
 
-validMCBer_Types = function(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax,Count){
+
+validMCPP_Types = function(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax,Count){
 
 ####################
 # DEFINE CONSTANTS #
@@ -53,6 +54,7 @@ Lmax = 1*Tmax + K0*Tmax  + (Tmax^2)*K1 + Tmax*(Tmax+1)/2*K2 + Tmax*K3 + Tmax*(Tm
 ##################################
 
 yvec_i = yvec[subjectIndex:(subjectIndex+T)]
+y_ind_i = ifelse(yvec_i>0,1,0)
 
 # CALCULATE MEAN AND SYSTEMATIC ESTIMATES FOR SUBJECT i #
 mu_i = rep(0,T)
@@ -66,9 +68,9 @@ for(t in 1:T)
 	if(K0==0){zx_it = c(1,xmat_it)}
 	else if(K0!=0){zx_it = c(1,zmat_it,xmat_it)}
 
-	# NOTE: THIS IS SPECIFIC TO THE BERNOULLI #
+	# NOTE: THIS IS SPECIFIC TO THE POSITIVE POISSON #
 	eta_i[t] = zx_it %*% betaI
-	mu_i[t] = exp(eta_i[t])/(1+exp(eta_i[t]))
+	mu_i[t] = exp(eta_i[t])/(1-exp(-exp(eta_i[t])))
 }
 
 ##################################
@@ -84,11 +86,11 @@ for(t in 1:T)
 gEst_i = rep(0,Lmax)
 count = 1
 
-#NOTE: gEst_i function is specific to the Bernoulli / Binomial
+#NOTE: gEst_i function is specific to the Positive Poisson
 #Intercept term moments: identical for all times
 for(t in 1:T)
 {
-	gEst_i[count] = (mu_i[t]/(1+exp(eta_i[t])))*(yvec_i[t]-mu_i[t])
+	gEst_i[count] = (mu_i[t]*(1-mu_i[t]*exp(-exp(eta_i[t]))))*y_ind_i[t]*(yvec_i[t]-mu_i[t])
 	Count[count] = Count[count]+1
 	count = count+1
 }
@@ -103,7 +105,7 @@ for(k in 1:K0)
 {
 	for(t in 1:T)
 	{
-		gEst_i[count] = (mu_i[t]/(1+exp(eta_i[t])))*Zmat[subjectIndex+t-1,k]*(yvec_i[t]-mu_i[t])
+		gEst_i[count] = (mu_i[t]*(1-mu_i[t]*exp(-exp(eta_i[t]))))*Zmat[subjectIndex+t-1,k]*y_ind_i[t]*(yvec_i[t]-mu_i[t])
 		Count[count] = Count[count]+1
 		count = count+1
 	}
@@ -123,7 +125,7 @@ for (k in 1:Ktv)
 		{
 			for (t in 1:T)
 			{
-				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(yvec_i[t]-mu_i[t])
+				gEst_i[count] = (mu_i[s]*(1-mu_i[s]*exp(-exp(eta_i[s]))))*Xmat[subjectIndex+s-1,k]*y_ind_i[t]*(yvec_i[t]-mu_i[t])
 				Count[count] = Count[count]+1
 				count = count + 1
 			}
@@ -142,7 +144,7 @@ for (k in 1:Ktv)
 		{
 			for (t in 1:s)
 			{
-				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(yvec_i[t]-mu_i[t])
+				gEst_i[count] = (mu_i[s]*(1-mu_i[s]*exp(-exp(eta_i[s]))))*Xmat[subjectIndex+s-1,k]*y_ind_i[t]*(yvec_i[t]-mu_i[t])
 				Count[count] = Count[count]+1
 				count = count + 1
 			}
@@ -156,7 +158,7 @@ for (k in 1:Ktv)
 	{
 		for (s in 1:T)
 		{
-			gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(yvec_i[s]-mu_i[s])
+			gEst_i[count] = (mu_i[s]*(1-mu_i[s]*exp(-exp(eta_i[s]))))*Xmat[subjectIndex+s-1,k]*y_ind_i[t]*(yvec_i[s]-mu_i[s])
 			Count[count] = Count[count]+1
 			count = count + 1
 		}
@@ -171,7 +173,7 @@ for (k in 1:Ktv)
 		{
 			for (s in 1:t)
 			{
-				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(yvec_i[t]-mu_i[t])
+				gEst_i[count] = (mu_i[s]*(1-mu_i[s]*exp(-exp(eta_i[s]))))*Xmat[subjectIndex+s-1,k]*y_ind_i[t]*(yvec_i[t]-mu_i[t])
 				Count[count] = Count[count]+1
 				count = count + 1
 			}
@@ -187,9 +189,6 @@ for (k in 1:Ktv)
 
 list(gEst_i,Count)
 
-} # end validMCBer_Types #
-
-
-
+} # end validMCPP_Types #
 
 
