@@ -1,278 +1,669 @@
-data(Orange)
-?Orange
-OrangeData = data.frame(Orange)
-attach(OrangeData)
-CirModel = aov(circumference ~ Tree)#
-ANOVATable = summary(CirModel)#
-str(ANOVATable)#
-p = ANOVATable[[1]][5][1,1]#
+# RESPONSE VARIATION ##
+sigma = 7.5
+x1=rnorm(n=n,mean=m1,sd=sd1)#
+	x2=rnorm(n=n,mean=m2,sd=sd2)#
+	x3=rnorm(n=n,mean=m3,sd=sd3)#
+	x4=rnorm(n=n,mean=m4,sd=sd4)#
+	x5=rnorm(n=n,mean=m5,sd=sd5)#
 #
-regModel = lm(circumference~Tree)#
-regANOVA = summary(regModel)#
-regANOVA$coefficients['Tree.Q','Pr(>|t|)']
+	# GENERATE DATA FOR REPONSE ##
+	y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)#
+#
+	# PERFORM CHOSEN TEST, RECORD WHETHER REJECTED ##
+	full = lm(y~x1+x2+x3+x4+x5)#
+	reduced = lm(y~x1+x2+x3)#
+#
+	p = pf(q=((anova(reduced)[[2]][4] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)
 p
-?interaction.plot
-?loglm
-library(MASS)
-?loglm
-X = c('A','A','B','B')#
-Y = c('S','F','S','F')#
-count = c(20,20,20,40)
-2WayEx = as.data.frame(cbind(X,Y,count))
-?as.data.frame
-twoWayEx = as.data.frame(cbind(X,Y,count))
-twoWayEx
-library(MASS)#
-model = loglm(count~X+Y,twoWayEx)
-model
-?chisq
-?chi.test
-?chisq.test
-xmat = matrix(c(20,20,20,40),2,2)
-xmat
-chisq.test(xmat)
-summary(model)
-twoWayEx = as.data.frame(cbind(X,Y,as.numeric(count)))#
+# RESPONSE VARIATION ##
+sigma = 8.5
+x1=rnorm(n=n,mean=m1,sd=sd1)#
+	x2=rnorm(n=n,mean=m2,sd=sd2)#
+	x3=rnorm(n=n,mean=m3,sd=sd3)#
+	x4=rnorm(n=n,mean=m4,sd=sd4)#
+	x5=rnorm(n=n,mean=m5,sd=sd5)#
 #
-library(MASS)#
-model = loglm(count~X+Y,twoWayEx)
-model
-str(model)
-resid(model)
-plot.loglm(model,residuals_type="pearson")
-library(vcd)#
-plot.loglm(model,residuals_type="pearson")
-?plot.loglm
-plot.loglm(model,residuals_type="pearson")
-?plot.loglm
-plot(model,residuals_type="pearson")
-plot(model,panel=assoc,residuals_type="pearson")
-plot(model,panel=assoc,residuals_type="deviance")
-plot(model,panel=assoc,residuals_type="pearson")
-plot(model,panel=assoc,residuals_type="deviance")
-?glm
-model_glm = glm(count~X+Y,family=poisson)
-model_glm
-summary(model_glm)
-str(model_glm)
-summary(model_glm)
-model_glm$residuals
-resid(model_glm)
-resid(model)
-?resid
-?dnorm
-pnorm(1.96)
-pnorm(1.96,lower.tail=FALSE)
-z = c(15.2709,3.6017,3.5094,4.3288,7.0072,2.3157)
-2*pnorm(z,lower.tail=FALSE)
-exp(-0.312)
-?is.estimable
-?transform
-vec = c(0,1,2,3,4,5,6,7,8,9)
-tranform(vec)
-transform(vec)
-?sample
-sample(vec)
-library(MCMCglmm)
-?MCMCglmm
-vignette("CourseNotes", "MCMCglmm")
-?tapply
-?points
-?hist
-?lines
-?qqline
-?plot
-install.package(httpuv)
-install.packages(httpuv)
-data()
-data(ChickWeight)
-?ChickWeight
-pf(2.6936,5,354,lower.tail=FALSE)
-data()
-data(ldeaths)
-data(mdeaths)
-data(cars)
-?cars
-data(ldeaths)
-?ldeaths
-deaths = data.frame(ldeaths)
-deaths
-deaths = data.frame(mdeaths)
-deaths
-deaths = data.frame(uspop)
-deaths
+	# GENERATE DATA FOR REPONSE ##
+	y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)#
+#
+	# PERFORM CHOSEN TEST, RECORD WHETHER REJECTED ##
+	full = lm(y~x1+x2+x3+x4+x5)#
+	reduced = lm(y~x1+x2+x3)#
+#
+	p = pf(q=((anova(reduced)[[2]][4] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)
+p
+M = 1000#
+#
+# CREATE SOMETHING TO SAVE RESULTS ##
+results = rep(0,M)#
+set.seed(12345)#
+#
+# PROCESS TO BE REPEATED ##
+for(i in 1:M)#
+{#
+	# GENERATE DATA FOR PREDICTORS ##
+	x1=rnorm(n=n,mean=m1,sd=sd1)#
+	x2=rnorm(n=n,mean=m2,sd=sd2)#
+	x3=rnorm(n=n,mean=m3,sd=sd3)#
+	x4=rnorm(n=n,mean=m4,sd=sd4)#
+	x5=rnorm(n=n,mean=m5,sd=sd5)#
+#
+	# GENERATE DATA FOR REPONSE ##
+	y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)#
+#
+	# PERFORM CHOSEN TEST, RECORD WHETHER REJECTED ##
+	full = lm(y~x1+x2+x3+x4+x5)#
+	reduced = lm(y~x1+x2+x3)#
+#
+	p = pf(q=((anova(reduced)[[2]][4] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)#
+#
+	if(p < 0.01){results[i]=1}#
+}
+mean(results)
+# GENERATE DATA FOR PREDICTORS ##
+	x1=rnorm(n=n,mean=m1,sd=sd1)#
+	x2=rnorm(n=n,mean=m2,sd=sd2)#
+	x3=rnorm(n=n,mean=m3,sd=sd3)#
+	x4=rnorm(n=n,mean=m4,sd=sd4)#
+	x5=rnorm(n=n,mean=m5,sd=sd5)#
+#
+	# GENERATE DATA FOR REPONSE ##
+	y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)#
+#
+	# PERFORM CHOSEN TEST, RECORD WHETHER REJECTED ##
+	full = lm(y~x1+x2+x3+x4+x5)#
+	reduced = lm(y~x1+x2+x3)
+summary(full)$r.squared
+summary(reduced)$r.squared
+?pwr.f2.test
+R2f = 0.905#
+R2r = 0.889#
+f2 = (R2f-R2r)/(1-R2f)#
+#
+pwr.f2.test(u=5-3,v=n-6,f2=f2,sig.level=0.05)
+R2f = 0.905#
+R2r = 0.851#
+f2 = (R2f-R2r)/(1-R2f)#
+#
+pwr.f2.test(u=5-3,v=n-6,f2=f2,sig.level=0.05)
+R2f = 0.90#
+R2r = 0.89#
+f2 = (R2f-R2r)/(1-R2f)#
+#
+pwr.f2.test(u=5-3,v=n-6,f2=f2,sig.level=0.05)
+R2f = 0.905#
+R2r = 0.890#
+f2 = (R2f-R2r)/(1-R2f)#
+#
+pwr.f2.test(u=5-3,v=n-6,f2=f2,sig.level=0.05)
+R2f = 0.905#
+R2r = 0.895#
+f2 = (R2f-R2r)/(1-R2f)#
+#
+pwr.f2.test(u=5-3,v=n-6,f2=f2,sig.level=0.05)
+R2f = 0.905#
+R2r = 0.891#
+f2 = (R2f-R2r)/(1-R2f)#
+#
+pwr.f2.test(u=5-3,v=n-6,f2=f2,sig.level=0.05)
+## FUNCTION TO PERFORM POWER SIMULATION ###
+## INPUT:	N, SAMPLE SIZE		###
+##					###
+## OUTPUT:	EMPIRICAL POWER		###
+MLRPower = function(N=50){#
+#
+# REGRESSION COEFFICIENTS ##
+beta0 = 2.5#
+beta1 = -1.6#
+beta2 = -3#
+beta3 = 4.5#
+beta4 = 1.3#
+beta5 = -4#
+#
+# RESPONSE VARIATION ##
+sigma = 8.5#
+#
+# PREDICTORS? ##
+m1 = 5#
+sd1 = 5#
+m2 = 0#
+sd2 = 2#
+m3 = 1#
+sd3 = 6#
+m4 = 10#
+sd4 = 0.5#
+m5 = 2#
+sd5 = 1#
+#
+M = 1000#
+#
+results = rep(0,M)#
+set.seed(12345)#
+#
+for(i in 1:M)#
+{#
+	# GENERATE DATA FOR PREDICTORS ##
+	x1=rnorm(n=n,mean=m1,sd=sd1)#
+	x2=rnorm(n=n,mean=m2,sd=sd2)#
+	x3=rnorm(n=n,mean=m3,sd=sd3)#
+	x4=rnorm(n=n,mean=m4,sd=sd4)#
+	x5=rnorm(n=n,mean=m5,sd=sd5)#
+#
+	# GENERATE DATA FOR REPONSE ##
+	y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)#
+#
+	# PERFORM CHOSEN TEST, RECORD WHETHER REJECTED ##
+	full = lm(y~x1+x2+x3+x4+x5)#
+	reduced = lm(y~x1+x2+x3)#
+#
+	p = pf(q=((anova(reduced)[[2]][4] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)#
+#
+	if(p < 0.01){results[i]=1}#
+}#
+list(Power = mean(results))#
+}
+MLRPower(50)
+## FUNCTION TO PERFORM POWER SIMULATION ###
+## INPUT:	N, SAMPLE SIZE		###
+##					###
+## OUTPUT:	EMPIRICAL POWER		###
+MLRPower = function(N=50){#
+#
+# REGRESSION COEFFICIENTS ##
+beta0 = 2.5#
+beta1 = -1.6#
+beta2 = -3#
+beta3 = 4.5#
+beta4 = 1.3#
+beta5 = -4#
+#
+# RESPONSE VARIATION ##
+sigma = 8.5#
+#
+# PREDICTORS? ##
+m1 = 5#
+sd1 = 5#
+m2 = 0#
+sd2 = 2#
+m3 = 1#
+sd3 = 6#
+m4 = 10#
+sd4 = 0.5#
+m5 = 2#
+sd5 = 1#
+#
+M = 1000#
+#
+results = rep(0,M)#
+set.seed(12345*N)#
+#
+for(i in 1:M)#
+{#
+	# GENERATE DATA FOR PREDICTORS ##
+	x1=rnorm(n=n,mean=m1,sd=sd1)#
+	x2=rnorm(n=n,mean=m2,sd=sd2)#
+	x3=rnorm(n=n,mean=m3,sd=sd3)#
+	x4=rnorm(n=n,mean=m4,sd=sd4)#
+	x5=rnorm(n=n,mean=m5,sd=sd5)#
+#
+	# GENERATE DATA FOR REPONSE ##
+	y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)#
+#
+	# PERFORM CHOSEN TEST, RECORD WHETHER REJECTED ##
+	full = lm(y~x1+x2+x3+x4+x5)#
+	reduced = lm(y~x1+x2+x3)#
+#
+	p = pf(q=((anova(reduced)[[2]][4] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)#
+#
+	if(p < 0.01){results[i]=1}#
+}#
+list(Power = mean(results))#
+}
+ss_values=c(40,50,60,70,80)#
+power_values = rep(0,5)
+for(i in 1:length(ss_values))#
+{#
+	power_values[i] = MLRPower(ss_values[i])#
+}
+powerData = as.data.frame(cbind(ss_values,power_values))#
+#
+ggplot(powerData, aes(x=ss_values, y=power_values)) + #
+	geom_smooth(aes(x=ss_values, y=power_values),color='blue') + #
+	ggtitle('Plot of Power versus Sample Size') +#
+	xlab('Potential Sample Size') +#
+	ylab('Power')
+powerData
+powerData = as.data.frame(cbind(ss_values,as.vector(power_values)))
+powerData
+powerData = as.data.frame(cbind(ss_values,power_values=as.vector(power_values)))
+powerData
+ggplot(powerData, aes(x=ss_values, y=power_values)) + #
+	geom_smooth(aes(x=ss_values, y=power_values),color='blue') + #
+	ggtitle('Plot of Power versus Sample Size') +#
+	xlab('Potential Sample Size') +#
+	ylab('Power')
+powerData = as.data.frame(cbind(ss_values,power_values))
+powerData
+summary(powerData)
+summary(powerData$ss_values)
+for(i in 1:length(ss_values))#
+{#
+	power_values[i] = MLRPower(ss_values[i])$Power#
+}
+powerData = as.data.frame(cbind(ss_values,power_values))
+summary(powerData)
+ss_values
+power_values
+powerData
+as.numeric(power_values)
+powerData = as.data.frame(cbind(as.numeric(ss_values),as.numeric(power_values)))
+powerData
+summary(powerData)
+powerData = as.data.frame(cbind(ss_values=as.numeric(ss_values),power_values=as.numeric(power_values)))
+summary(powerData)
+ggplot(powerData, aes(x=ss_values, y=power_values)) + #
+	geom_smooth(aes(x=ss_values, y=power_values),color='blue') + #
+	ggtitle('Plot of Power versus Sample Size') +#
+	xlab('Potential Sample Size') +#
+	ylab('Power')
+## FUNCTION TO PERFORM POWER SIMULATION ###
+## INPUT:	N, SAMPLE SIZE		###
+##					###
+## OUTPUT:	EMPIRICAL POWER		###
+MLRPower = function(N=50){#
+#
+# REGRESSION COEFFICIENTS ##
+beta0 = 2.5#
+beta1 = -1.6#
+beta2 = -3#
+beta3 = 4.5#
+beta4 = 1.3#
+beta5 = -4#
+#
+# RESPONSE VARIATION ##
+sigma = 8.5#
+#
+# PREDICTORS? ##
+m1 = 5#
+sd1 = 5#
+m2 = 0#
+sd2 = 2#
+m3 = 1#
+sd3 = 6#
+m4 = 10#
+sd4 = 0.5#
+m5 = 2#
+sd5 = 1#
+#
+M = 1000#
+#
+results = rep(0,M)#
+set.seed(12345*N)#
+#
+for(i in 1:M)#
+{#
+	# GENERATE DATA FOR PREDICTORS ##
+	x1=rnorm(n=N,mean=m1,sd=sd1)#
+	x2=rnorm(n=N,mean=m2,sd=sd2)#
+	x3=rnorm(n=N,mean=m3,sd=sd3)#
+	x4=rnorm(n=N,mean=m4,sd=sd4)#
+	x5=rnorm(n=N,mean=m5,sd=sd5)#
+#
+	# GENERATE DATA FOR REPONSE ##
+	y = rnorm(n=N,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)#
+#
+	# PERFORM CHOSEN TEST, RECORD WHETHER REJECTED ##
+	full = lm(y~x1+x2+x3+x4+x5)#
+	reduced = lm(y~x1+x2+x3)#
+#
+	p = pf(q=((anova(reduced)[[2]][4] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)#
+#
+	if(p < 0.01){results[i]=1}#
+}#
+list(Power = mean(results))#
+}
+ss_values=c(40,50,60,70,80)#
+power_values = rep(0,5)#
+#
+for(i in 1:length(ss_values))#
+{#
+	power_values[i] = MLRPower(ss_values[i])$Power#
+}
+powerData = as.data.frame(cbind(ss_values=as.numeric(ss_values),power_values=as.numeric(power_values)))
+powerData
+ggplot(powerData, aes(x=ss_values, y=power_values)) + #
+	geom_smooth(aes(x=ss_values, y=power_values),color='blue') + #
+	ggtitle('Plot of Power versus Sample Size') +#
+	xlab('Potential Sample Size') +#
+	ylab('Power')
+?png
+library(gamlss)
+data(abdom)
+a<-gamlss(y~pb(x),sigma.fo=~pb(x,1),family=LO,data=abdom)
+summary(a)
+wp(a)
+wp(a,col='blue')
+wp(a,col='grey45')
+install.packages('AGD')
+library(AGD)
+?wp.twin
+wp.twin(a)
+wp(a)
+wp.twin(a,line=TRUE)
+wp.twin(a,line=TRUE,n.inter=1)
+wp.twin(a,line=TRUE,n.inter=1,col1='grey45')
+wp.twin(a,line=TRUE,n.inter=1,col1='grey')
+wp.twin(a,line=TRUE,n.inter=1,col1='black')
+wp.twin(a,line=TRUE,n.inter=2,col1='black')
+wp.twin(a,line=TRUE,n.inter=2,col1='grey45')
+wp.twin(a,line=TRUE,n.inter=1,col1='grey45')
+wp.twin(a,line=TRUE,n.inter=2,col1='grey45')
+install.packages("RCurl")
+library("RCurl")
+?getURL
+X = rpois(10)
+?rpois
+X = rpois(100,10)
+X
+hist(X)
+?rnorm
+Y1 = rnorm(100,mean=(2+5X),sd=2)
+?rnorm
+Y1 = rnorm(n=100,mean=(2+5*X),sd=2)
+Y1
+library(ggplot2)
+qplot(Y1,X)
+qplot(X,Y1)
+Y2 = rnorm(n=100,mean=(2+5*(X^2)),sd=2)
+qplot(X,Y2)
 ?rbinom
-X = c('A','A','B','B')#
-Y = c('S','F','S','F')#
-count = c(20,20,20,40)#
-#
-twoWayEx = as.data.frame(cbind(X,Y,as.numeric(count)))#
-## FIT LOGLINEAR MODEL ###
-#
-library(MASS)#
-model = loglm(count~X+Y,twoWayEx)#
-#
-model#
-#
-summary(model)#
-#
-resid(model)
-model_glm = glm(count~X+Y,family=poisson)#
-#
-model_glm#
-summary(model_glm)#
-str(model_glm)#
-#
-model_glm$residuals#
-resid(model_glm)
-sum(abs(model_glm$residuals))
-sum(abs(resid(model_glm)))
-model_glm$family$dev.resid
-sum((model_glm$residuals)^2)
-sum((resid(model_glm))^2)
-resid(model_glm)
-resid(model_glm)^2
-X = c('A','A','B','B')#
-Y = c('S','F','S','F')#
-count = c(20,20,20,40)#
-#
-twoWayEx = as.data.frame(cbind(X,Y,as.numeric(count)))
-model_glm = glm(count~X+Y,family=poisson)#
-#
-model_glm#
-summary(model_glm)
-model_glm$residuals
-library(AER)#
-dispersiontest(model_glm,trafo=1)
-X = c('A','A','B','B')#
-Y = c('S','F','S','F')#
-count = c(20,20,20,40)#
-#
-twoWayEx = as.data.frame(cbind(X,Y,as.numeric(count)))#
-## FIT LOGLINEAR MODEL ###
-#
-library(MASS)#
-model = loglm(count~X+Y,twoWayEx)#
-#
-model#
-#
-summary(model)#
-#
-resid(model) # DEVIANCE RESIDUALS ##
-## RESIDUALS: EASIRE WITH GLM ###
-#
-model_glm = glm(count~X+Y,family=poisson)#
-#
-model_glm#
-summary(model_glm)#
-str(model_glm)#
-#
-model_glm$residuals#
-resid(model_glm) # DEVIANCE RESIDUALS
-dispersiontest(model_glm,trafo=1)
-?interaction.plot
-?aov
-?mauchly.test
-?mlm
-?anova.mlm
-install.packages('glmmADMB')
-install.packages('pwr')
-library('pwr')
-?pwr.t.test
-pre = 12.3#
-post = 14.8#
-sd = 7.5#
-#
-d = (post-pre)/sd
-pwr.t.test(n=23,d=d,sig.level=0.05,type="paired",alternative="greater")
-pwr.t.test(n=23,d=d,sig.level=0.05,type="paired",alternative="two.sided")
-power = c(0.70,0.75,0.80,0.85,0.90,0.95)
-?pwr.t.test
-pwr.t.test(d=d,sig.level=0.05,power=power,type="paired",alternative="greater")
-?pwr.t.test
-?sapply
-sapply(power_values,FUN=pwr.t.test(d=d,sig.level=0.05,power=power_values,type="paired",alternative="greater"))
-power_values = c(0.70,0.75,0.80,0.85,0.90,0.95)
-sapply(power_values,FUN=pwr.t.test(d=d,sig.level=0.05,power=power_values,type="paired",alternative="greater"))
-sapply(power_values,FUN=function(x)pwr.t.test(d=d,sig.level=0.05,power=x,type="paired",alternative="greater"))
-sapply(power_values,FUN=function(x)pwr.t.test(d=d,sig.level=0.01,power=x,type="paired",alternative="greater"))
-5+3
-7-4
-9-22
-5  +    3
-5*3
-exp(1)
-sqrt(9)
-2^3
-a <- 4
-a
-a = 4
-a
-b = 3
-b
-a*b
-a/b
-c = a/b
-c
-a = c(1,2,3,4,5)
-a
-a[2]
-a[5]
-a*3
-a/5
-a+15
-b = 2*a
-b
-a*b
-a
-b
-a*b
-a %*% b
-A = matrix(c(1,2,3,4),2,2)#
-A
-B = matrix(c(1,2,3,4,5,6),2,3)#
-C = matrix(c(1,2,3,4,5,6),3,2)#
-B#
-C
-3*B
-C*B
-C %*% B
+B1 = rbinom(n=100,size=1,prob=((exp(2+5*X))/(1+exp(2+5*X))))
+B1
+B1 = rbinom(n=100,size=1,prob=((exp(0.02+0.5*X))/(1+exp(0.02+0.5*X))))
+B1
+B1 = rbinom(n=100,size=1,prob=((exp(-0.4+0.5*X))/(1+exp(-0.4+0.5*X))))
+B1
+B1 = rbinom(n=100,size=1,prob=((exp(-1.4+0.5*X))/(1+exp(-1.4+0.5*X))))
+B1
+B1 = rbinom(n=100,size=1,prob=((exp(-3.4+0.5*X))/(1+exp(-3.4+0.5*X))))
+B1
+B1 = rbinom(n=100,size=1,prob=((exp(-4.4+0.5*X))/(1+exp(-4.4+0.5*X))))
+B1
+qplot(X,B1)
+BData = as.data.frame(cbind(X,B1))
+BData
+ggplot(BData, aes(x=X, y=B1)) + #
+	geom_bin2d(bins = 10) +#
+	scale_fill_gradientn(limits=c(0,20), breaks=seq(0,20, by=3), colours=c('grey80','grey10')) + #
+	geom_smooth(method = "glm",method.args = list(family = "binomial"),col='grey45') +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=22))
+B2 = rbinom(n=100,size=1,prob=((exp(-4.4+0.5*(X^2)))/(1+exp(-4.4+0.5*(X^2)))))
+B2
+B2 = rbinom(n=100,size=1,prob=((exp(-6+0.15*(X^2)))/(1+exp(-6+0.15*(X^2)))))
+B2
+B2 = rbinom(n=100,size=1,prob=((exp(-6+0.05*(X^2)))/(1+exp(-6+0.05*(X^2)))))
+B2
+B2 = rbinom(n=100,size=1,prob=((exp(-6+0.10*(X^2)))/(1+exp(-6+0.10*(X^2)))))
+B2
+B2 = rbinom(n=100,size=1,prob=((exp(-6+0.08*(X^2)))/(1+exp(-6+0.08*(X^2)))))
+B2
+BData = as.data.frame(cbind(X,B1,B2))
+ggplot(BData, aes(x=X, y=B2)) + #
+	geom_bin2d(bins = 10) +#
+	scale_fill_gradientn(limits=c(0,20), breaks=seq(0,20, by=3), colours=c('grey80','grey10')) + #
+	geom_smooth(method = "glm",method.args = list(family = "binomial"),col='grey45') +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=22))
+library('RCurl')
+url = 'https://server.lifedatacorp.com/index.php/DataDownload/dataDownload')#
+name = michael.phillips#
+pwd = UnCo2019
+url = 'https://server.lifedatacorp.com/index.php/DataDownload/dataDownload'
+name = getURL(url,userpwd='michael.phillips:UnCo2019',verbose=TRUE)
+sdjkhglkjshfgl
+history()
 ls()
-a
-B
-ls()
-a
-B
+a = 3
+b = 4
+A = matrix(c(1,2,3,4),2,2)
 A
-?read.table
-library(lme4)#
+history
+history()
+ls()
+A
+?data
+data()
+data = data(ChickWeight)
+?ChickWeight
+exp(9.09)
+exp(-0.69)
+exp(-0.01)
+exp(0.004)
+exp(0.30)
+exp(0.14)
+exp(-0.08)
+exp(0.03)
+?fisher.test
+arrests = matrix(c(380,9,360,6),2,2)
+arrests
+fisher.test(arrests)
+compressions = matrix(c(3,8,13,6),2,2)
+compressions
+fisher.test(compressions)
+?chisq.test
+chisq.test(arrests)
+chisq.test(compressions)
+install.packages('devtools')
+devtools::install_github("flor3652/BigD")
+?zt_irls
+?install.packages
+library(ggplot2)#
+library(s20x)#
 library(lmerTest)
-install.packages("lmerTest")
-exp(0.045)
-exp(10*0.045)
-exp(0.156)
-exp(1.606)
-exp(-0.092)
-1-exp(-0.092)
-beta = c(-0.037,0.047,0.579,1.350,-0.041,0.138,-0.029,0.144,-0.065,-0.037,-0.159,0.151,-0.558,-0.027)
-exp(beta)
-data(WorldPhones)
-attach(WorldPhones)
-WorldPhones
-attach(as.data.frame(WorldPhones))
-phoneData = as.data.frame(WorldPhones)
-phoneData
-?git
+setwd('/Users/trent.lalonde/Documents/Research/Research Projects/Collaborative - Applied/Student Activity/Data/')#
+StudentActivityData = read.csv("StudentActivityData.csv")
+StudentActivityData$date = as.Date(StudentActivityData$date,"%m/%d/%Y")
+MVPAMeans = aggregate(act_min_Evenson_mvpa~as.factor(activity)+as.factor(week),data=StudentActivityData,FUN=function(x)mean(x,na.rm=TRUE))
+MVPAMeans
+StudentActivityData$ReadingTotal = StudentActivityData$ReadingLevel + StudentActivityData$ReadingFluency + StudentActivityData$ReadingComprehension + StudentActivityData$ReadingStrategies + StudentActivityData$ReadingEffort#
+#
+StudentActivityData$MathTotal = StudentActivityData$MathComputation + StudentActivityData$MathConcepts + StudentActivityData$MathEffort#
+#
+StudentActivityData$WritingTotal = StudentActivityData$WritingMechanics + StudentActivityData$WritingContent + StudentActivityData$WritingEffort
+StudentActivityData$EthnicityBin = ifelse(StudentActivityData$Ethnicity == 1,1,0)
+Single = aggregate(act_min_Evenson_mvpa~masterID+Grade+Gender+Ethnicity+FRL+Teacher,StudentActivityData,mean)
+table(Single$Grade,Single$Teacher)
+SADataDaySimple = aggregate(act_min_Evenson_mvpa~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher+ReadingTotal+MathTotal+WritingTotal,StudentActivityData,sum,na.rm=FALSE)#
+ggplot(SADataDaySimple, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("MVPA") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
+ggplot(SADataDaySimple, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("MVPA") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
+SAData100 = SADataDaySimple[(which(SADataDaySimple$act_min_Evenson_mvpa<=100)),]
+dim(SADataDaySimple)
+dim(SAData100)
+DayModelSimple = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID),data=SADataDaySimple,REML=TRUE)
+summary(DayModelSimple)
+DayModelSimple = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,REML=TRUE)
+summary(DayModelSimple)
+?glmer
+DayModelSimple = Glmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=poisson,REML=TRUE)
+DayModelPoisson = glmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=poisson,REML=TRUE)
+warnings()
+ggplot(SAData100, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("MVPA") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
+# RANDOM TEACHER ##
+DayModel100 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SAData100,REML=TRUE)#
+#
+summary(DayModel100)
+# AS A RIGHT-SKEWED MODEL ##
+DayModelGamma = glmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=gamma,REML=TRUE)#
+#
+summary(DayModelGamma)
+?family
+DayModelGamma = glmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=Gamma,REML=TRUE)#
+#
+summary(DayModelGamma)
+summary(SADataDaySimple)
+SADataDaySimple$MVPA = SADataDaySimple$act_min_Evenson_mvpa+0.01#
+DayModelGamma = glmer(MVPA~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=Gamma,REML=TRUE)#
+#
+summary(DayModelGamma)
+SADataDaySimple$MVPA = SADataDaySimple$act_min_Evenson_mvpa+0.01#
+DayModelGamma = glmer(MVPA~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1|masterID),data=SADataDaySimple,family=Gamma)#
+#
+summary(DayModelGamma)
+13803.3/1505
+hist(SADataDaySimple$act_min_Evenson_mvpa)
+SADataDay = aggregate(act_min_Evenson_mvpa~masterID+StudyDay+Grade+Gender+EthnicityBin+FRL+post+Teacher+ReadingTotal+MathTotal+WritingTotal,StudentActivityData,sum,na.rm=FALSE)
+DayModel = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDay+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDay|masterID),data=SADataDay,REML=TRUE)
+DayModelSimple = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,REML=TRUE)#
+#
+summary(DayModelSimple)
+SEDDataDaySimple = aggregate(act_min_Matthew_sed~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher+ReadingTotal+MathTotal+WritingTotal,StudentActivityData,sum,na.rm=FALSE)
+SEDModelSimple = lmer(act_min_Matthew_sed~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SEDDataDaySimple,REML=TRUE)#
+#
+summary(SEDModelSimple)
+ggplot(SEDDataDaySimple, aes(x=StudyDaySimple,y=act_min_Matthew_sed)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of SED Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("SED") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
+setwd('/Users/trent.lalonde/Documents/Research/Research Projects/Collaborative - Applied/Student Activity/Data/')#
+StudentActivityData = read.csv("StudentActivityData.csv")
+summary(StudentActivityData)
+table(StudentActivityData$Grade)
+## MAKE DATE A DATE ###
+StudentActivityData$date = as.Date(StudentActivityData$date,"%m/%d/%Y")#
+#
+## FIX ETHNICITY ###
+StudentActivityData$EthnicityBin = ifelse(StudentActivityData$Ethnicity == 1,1,0)
+MVPADatak12 = aggregate(act_min_Evenson_mvpa~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher,StudentActivityData,sum,na.rm=FALSE)
+summary(MVPADatak12)
+ggplot(MVPADatak12, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("MVPA") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
+MVPAModelk12 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+(1+StudyDaySimple|masterID)+(1|Teacher),data=MVPADatak12,REML=TRUE)#
+#
+summary(MVPAModelk12)
+K12Data100 = MVPADatak12[(which(MVPADatak12$act_min_Evenson_mvpa<=100)),]#
+ggplot(MVPADatak12, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("MVPA") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
+ggplot(K12Data100, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("MVPA") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
+MVPAModelk12100 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+(1+StudyDaySimple|masterID)+(1|Teacher),data=K12Data100,REML=TRUE)#
+#
+summary(MVPAModelk12100)
+SEDDatak12 = aggregate(act_minMatthew_sed~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher,StudentActivityData,sum,na.rm=FALSE)
+SEDDatak12 = aggregate(act_min_Matthew_sed~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher,StudentActivityData,sum,na.rm=FALSE)
+ggplot(SEDDatak12, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("MVPA") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
+ggplot(SEDDatak12, aes(x=StudyDaySimple,y=act_min_Matthew_sed)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of SED Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("SED") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
+SEDModelk12 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+(1+StudyDaySimple|masterID)+(1|Teacher),data=SEDDatak12,REML=TRUE)#
+#
+summary(SEDModelk12)
+SEDModelk12 = lmer(act_min_Matthew_sed~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+(1+StudyDaySimple|masterID)+(1|Teacher),data=SEDDatak12,REML=TRUE)#
+#
+summary(SEDModelk12)
+# RANDOM TEACHER ##
+DayModelSimple = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,REML=TRUE)#
+#
+summary(DayModelSimple)
+setwd('/Users/trent.lalonde/Documents/Research/Research Projects/Collaborative - Applied/Student Activity/Summaries/')#
+pdf("PostPreMVPA.pdf")#
+ggplot(SADataDaySimple, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("MVPA") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))#
+dev.off()
+setwd('/Users/trent.lalonde/Documents/Research/Research Projects/Collaborative - Applied/Student Activity/Summaries/')#
+pdf("PostPreMVPA100.pdf")#
+ggplot(SAData100, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
+	geom_point(col='grey45') + #
+	geom_smooth(col='grey45') +#
+	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
+	xlab("Day of Study (1-20)") + #
+	ylab("MVPA") +#
+	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))#
+dev.off()
+DayModel100 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SAData100,REML=TRUE)#
+#
+summary(DayModel100)
+# RANDOM TIME, TEACHER ##
+SEDModelSimple = lmer(act_min_Matthew_sed~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SEDDataDaySimple,REML=TRUE)#
+#
+summary(SEDModelSimple)
+MVPAMeans = aggregate(act_min_Evenson_mvpa~as.factor(activity)+as.factor(week),data=StudentActivityData,FUN=function(x)mean(x,na.rm=TRUE))
+MVPAMeans
+DayModel100 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SAData100,REML=TRUE)#
+#
+summary(DayModel100)
+SADataLess100 = SADataDaySimple[(which(SADataDaySimple$act_min_Evenson_mvpa>100)),]
+summary(SADataLess100)
+SADataGreater100 = SADataDaySimple[(which(SADataDaySimple$act_min_Evenson_mvpa>100)),]
+summary(SADataGreater100)
+dim(SADataGreater100)
+table(SADataGreater100$Teacher)
+write.csv(SADataGreater100,file="Over100.csv")
+library(readstata13)
+setwd('/Users/trent.lalonde/Desktop/')#
+data = read.dta13("Collapsed Teacher 1 School 2 Friday May 12 2017.dta")
+summary(data)
+head(data)
+data2 = read.dta13("Collapsed Teacher 2 School 6 Monday May 8 2017.dta")
+head(data2)
+data3 = read.dta13("Collapsed Teacher 2 School 4 Frid May 12.dta")
+head(data3)
+data3[(1:15),]
+?family
+?family
+x = c(-1)
+x == c(-1)
+library(gee)
+install.packages("gee")
+setwd('/Users/trent.lalonde/Documents/Research/Programs/R Packages/TSGMM/')
 library(devtools)
-library(roxygen2)
-setwd('/Users/Lalonde/Documents/Trent/Work/Research/Programs/R Packages/')
-create('PRNGeneration')
-setwd('./PRNGeneration/')
-document()
-?PRNGCorrBer
-setwd('/Users/Lalonde/Documents/Trent/Work/Research/Programs/R Packages/')
-setwd('./TSGMM/')
-document()
-?TSGMM_PP
-document()
-?TSGMM_PP
+use_package("gee")

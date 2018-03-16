@@ -22,8 +22,6 @@
 
 TSGMM_Hurdle = function(y,subjectID,N,Tvec,X_l,Z_l,X_c,Z_c,mc='EC',covTypeVec_l=c(-1),covTypeVec_c=c(-1)){
 
-library("MASS")
-
 
 # CREATE ONE DESIGN FOR GEE #
 if(!is.matrix(Z_l)){ZX_l = cbind(rep(1,nrow(X_l)),X_l)}
@@ -38,14 +36,9 @@ HGEE_output = HurdleGEE(y,subjectID,N,ZX_l,ZX_c)
 betaI_l = HGEE_output$betaHat_l
 betaI_c = HGEE_output$betaHat_c
 
-#betaI_l = rep(0.01,ncol(ZX_l))
-#betaI_c = rep(0.01,ncol(ZX_c))
-
 r_l = HGEE_output$r_l
 r_c = HGEE_output$r_c
 
-#r_l = rep(0,length(y))
-#r_c = rep(0,length(y))
 
 # CALL ADJUSTED VERSION OF TSGMM_BER #
 TSGMM_Hurdle_l = TSGMM_c0(y,subjectID,Z_l,X_l,Tvec,N,mc,covTypeVec_l,betaI_l,r_l)

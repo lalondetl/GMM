@@ -11,7 +11,6 @@
 
 pACT = function(pvals){
 
-library(mvtnorm)
 level=25000
 
 L = length(pvals)
@@ -31,7 +30,7 @@ if (minp>0 & minp < .5)
 	# CALCULATE COVARIANCE MATRIX v #
 	v = diag(1,length(pvals))
 
-	p_ACT=1-pmvnorm(lower=lower,upper=upper,sigma=v,maxpts=level,abseps=.0000000000001)
+	p_ACT=1-mvtnorm::pmvnorm(lower=lower,upper=upper,sigma=v,maxpts=level,abseps=.0000000000001)
 }
 
 p_ACT

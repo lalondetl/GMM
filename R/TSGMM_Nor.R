@@ -1,31 +1,25 @@
 
 
-#' Two-Step Generalized Method of Moments, Logistic Component of Longitudinal Hurdle Model
+#' Two-Step Generalized Method of Moments, Longitudinal Normal Outcome
 #'
-#' This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for the logistic component (modeling the probability of a "certain zero") of a hurdle model for longitudinal excess zero count responses.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  Data must be organized by subject, and an intercept term is assumed.  The function outputs a list with parameter estimates betaHat along with parameter covariance estimates covEst.  
-#' @param y	The vector of binary responses, where "1" indicates a zero from the original response and "0" indicates a positive count from the original response.  This vector must be organized by subject, and by time within subject ((sum(Tvec)) x 1).  
-#' @param subjectID	The vector of subject ID values for each response ((sum(Tvec)) x 1).  
-#' @param Zmat The design matrix for time-independent covariates ((sum(Tvec)) x K0).  
-#' @param Xmat The design matrix for time-dependent covariates ((sum(Tvec)) x Ktv).  
+#' This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for longitudinal continuous (normal) responses.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  
+#' @param yvec The vector of responses, ordered by subject, time within subject.
+#' @param subjectID The vector of subject ID values for each response.  
+#' @param Zmat The design matrix for time-independent covariates.  
+#' @param Xmat The design matrix for time-dependent covariates.  
 #' @param Tvec The vector of times for each subject.  
 #' @param N The number of subjects.  
 #' @param mc The method of identifying appropriate moment conditions, either 'EC' for extended classification (default) or 'Types' for user-identified types.  
 #' @param covTypeVec The vector indicating the type of each time-dependent covariate, according to the order of the columns of Xmat.  
-#' @param betaI	The initial parameter estimates, from hurdle GEE with independent working correlation structure.  
-#' r_l The vector of residuals from hurdle GEE with independent working correlation structure.  
 #' @keywords GMM
 #' @export
 #' @examples
-#' TSGMM_c0()
+#' TSGMM_Nor()
 
 
 
-TSGMM_c0 = function(y,subjectID,Zmat,Xmat,Tvec,N,mc='EC',covTypeVec=c(-1),betaI,r_l){
 
-# CREATE BINARY RESPONSE #
-# MODEL CERTAIN ZERO!!! #
-yvec = ifelse(y>0,0,1)
-
+TSGMM_Nor = function(yvec,subjectID,Zmat,Xmat,Tvec,N,mc='EC',covTypeVec=c(-1)){
 
 ####################
 # DEFINE CONSTANTS #
@@ -59,6 +53,21 @@ for(k in 1:Ktv)
 
 
 
+######################################
+# OBTAIN INITIAL PARAMETER ESTIMATES #
+######################################
+
+# INDEPENDENT GEE #
+
+if(K0==0){ZX = Xmat}
+if(K0!=0){ZX = cbind(Zmat,Xmat)}
+
+betaI = gee::gee(yvec ~ ZX,id=subjectID,family=gaussian,corstr="independence")$coefficients
+
+######################################
+######################################
+
+
 ##########################################################
 ## MAXIMUM NUMBER OF ESTIMATING EQUATIONS (PER SUBJECT) ##
 ##########################################################
@@ -72,7 +81,7 @@ if(mc=='Types'){Lmax = 1*Tmax + K0*Tmax  + (Tmax^2)*K1 + Tmax*(Tmax+1)/2*K2 + Tm
 if(mc=='EC')
 {
 	alpha = 0.05/(Tmax^2)
-	types = validComb_EC_c0(yvec,Zmat,Xmat,betaI,Tvec,alpha,r_l) 
+	types = validComb_EC_Nor(yvec,Zmat,Xmat,betaI,Tvec,alpha)
 	Lmax = 1*Tmax + K0*Tmax  + sum(types)
 }
 
@@ -94,8 +103,8 @@ QuadForm = function(beta){
 	for(i in 1:N)
 	{
 		subjectIndex = sum(Tvec[0:(i-1)])+1
-		if(mc=='EC'){Est_i = validMCBer_EC(yvec,subjectIndex,Zmat,Xmat,beta,Tvec[i],Tmax,Count,types)}
-		if(mc=='Types'){Est_i = validMCBer_Types(yvec,subjectIndex,Zmat,Xmat,covTypeVec,beta,Tvec[i],Tmax,Count)}
+		if(mc=='EC'){Est_i = validMCNor_EC(yvec,subjectIndex,Zmat,Xmat,beta,Tvec[i],Tmax,Count,types)}
+		if(mc=='Types'){Est_i = validMCNor_Types(yvec,subjectIndex,Zmat,Xmat,covTypeVec,beta,Tvec[i],Tmax,Count)}
 
 		gEst_i = Est_i[[1]]
 		Count = Est_i[[2]]
@@ -128,6 +137,9 @@ QuadForm = function(beta){
 
 
 
+
+
+
 ######################################################################################
 # GMM COEFFICIENTS ARE OBTAINED BY MINIMIZING QUADFORM, WITH BETAI AS INITIAL VALUES #
 ######################################################################################
@@ -136,6 +148,8 @@ betahat = optim(betaI, QuadForm)$par
 
 ######################################################################################
 ######################################################################################
+
+
 
 
 
@@ -151,15 +165,15 @@ for(i in 1:N)
 {
 	subjectIndex = sum(Tvec[0:(i-1)])+1
 
-	if(mc=='EC'){Est_i = validMCBer_EC(yvec,subjectIndex,Zmat,Xmat,betahat,Tvec[i],Tmax,Count,types)}
-	if(mc=='Types'){Est_i = validMCBer_Types(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betahat,Tvec[i],Tmax,Count)}
+	if(mc=='EC'){Est_i = validMCNor_EC(yvec,subjectIndex,Zmat,Xmat,betahat,Tvec[i],Tmax,Count,types)}
+	if(mc=='Types'){Est_i = validMCNor_Types(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betahat,Tvec[i],Tmax,Count)}
 
 	gEst_i = Est_i[[1]]
 	Count = Est_i[[2]]
 	VN = VN + gEst_i%*%t(gEst_i)
 
-	if(mc=='EC'){dBetagEst_i = validMDBer_EC(yvec,subjectIndex,Zmat,Xmat,betahat,Tvec[i],Tmax,types)}
-	if(mc=='Types'){dBetagEst_i = validMDBer_Types(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betahat,Tvec[i],Tmax)}
+	if(mc=='EC'){dBetagEst_i = validMDNor_EC(yvec,subjectIndex,Zmat,Xmat,betahat,Tvec[i],Tmax,types)}
+	if(mc=='Types'){dBetagEst_i = validMDNor_Types(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betahat,Tvec[i],Tmax)}
 	dBetaG = dBetaG + dBetagEst_i
 }
 
@@ -188,6 +202,7 @@ AsymptoticCovariance = (1/N)*MASS::ginv(AsymptoticWeight)
 
 list(betaHat=betahat, covEst = AsymptoticCovariance)
 
-} # END TSGMM_c0 #
+} # END TSGMM_Nor #
+
 
 

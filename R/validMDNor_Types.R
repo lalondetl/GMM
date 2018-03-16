@@ -1,8 +1,8 @@
 
 
-#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Bernoulli Responses, User-Defined Types
+#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Normal Responses, User-Defined Types
 #' 
-#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with binary outcomes.  It allows for unbalanced data, and uses user-defined types of time-dependent covariates to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
+#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with continuous (normal) outcomes.  It allows for unbalanced data, and uses user-defined types of time-dependent covariates to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.
 #' @param subjectIndex The location of the first index of subject i responses within yvec.  
 #' @param Zmat The design matrix for time-independent covariates.  
@@ -15,9 +15,9 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' validMDBer_Types()
+#' validMDNor_Types()
 
-validMDBer_Types = function(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax){
+validMDNor_Types = function(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax){
 
 ####################
 # DEFINE CONSTANTS #
@@ -67,9 +67,9 @@ for(t in 1:T)
 	if(K0==0){zx_it = c(1,xmat_it)}
 	else if(K0!=0){zx_it = c(1,zmat_it,xmat_it)}
 
-	# NOTE: THIS IS SPECIFIC TO THE BERNOULLI #
+	# NOTE: THIS IS SPECIFIC TO THE NORMAL #
 	eta_i[t] = zx_it %*% betaI
-	mu_i[t] = exp(eta_i[t])/(1+exp(eta_i[t]))
+	mu_i[t] = eta_i[t]
 }
 
 ##################################
@@ -83,7 +83,7 @@ for(t in 1:T)
 
 #########################################################
 #	DEFINE DERIVATIVE MATRICES FOR SUBJECT i	#
-#		UNIQUE TO BERNOULLI!!			##########################################################
+#		UNIQUE TO NORMAL!!			##########################################################
 
 
 ##	FIRST DERIVATIVE OF MEAN	##
@@ -94,7 +94,7 @@ for(t in 1:T)
 dCount = 1
 
 	# INTERCEPT #
-	dBetamu_i[t,dCount] = (1)*mu_i[t]*(1-mu_i[t])
+	dBetamu_i[t,dCount] = (1)
 	dCount = dCount+1
 
 	# TIC #
@@ -102,7 +102,7 @@ dCount = 1
 	{
 	for(j in 1:K0)
 	{
-		dBetamu_i[t,dCount] = (Zmat[subjectIndex+t-1,j])*mu_i[t]*(1-mu_i[t])
+		dBetamu_i[t,dCount] = (Zmat[subjectIndex+t-1,j])
 		dCount = dCount+1
 	}
 	}
@@ -110,22 +110,21 @@ dCount = 1
 	# TDC #
 	for(j in 1:ncol(Xmat))
 	{
-		dBetamu_i[t,dCount] = (Xmat[subjectIndex+t-1,j])*mu_i[t]*(1-mu_i[t])
+		dBetamu_i[t,dCount] = (Xmat[subjectIndex+t-1,j])
 		dCount = dCount+1
 	}
 }
 
 ##	PART OF SECOND DERIVATIVE OF MEAN	##
-##		(Xmat[i,t,j] OMITTED)		##
 
 d2Betamu_i_part = matrix(0,T,K)
-for (t in 1:T)
-{
-	for (k in 1:K)
-	{
-		d2Betamu_i_part[t,k] = dBetamu_i[t,k]*(1-2*mu_i[t])
-	}
-}
+#for (t in 1:T)
+#{
+#	for (k in 1:K)
+#	{
+#		d2Betamu_i_part[t,k] = dBetamu_i[t,k]*(1-2*mu_i[t]) $ NEEDS WORK!! 0?? #
+#	}
+#}
 
 
 
@@ -246,7 +245,7 @@ for (j in 1:Ktv)
 # dBetag_i IS NOW A (L x K) MATRIX OF DERIVATIVES FOR SUBJECT i #
 
 dBetag_i
-} # END validMDBer_Types #
+} # END validMDNor_Types #
 
 
 

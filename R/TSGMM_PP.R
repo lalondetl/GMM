@@ -11,15 +11,16 @@
 #' @param N The number of subjects.  
 #' @param mc The method of identifying appropriate moment conditions, either 'EC' for extended classification (default) or 'Types' for user-identified types.  
 #' @param covTypeVec The vector indicating the type of each time-dependent covariate, according to the order of the columns of Xmat.  
-#' @param betaI	The initial parameter estimates, from hurdle GEE with independent working correlation structure.  
+#' @param betaI	The initial parameter estimates.  
 #' r_c The vector of residuals from hurdle GEE with independent working correlation structure.  
 #' @keywords GMM
 #' @export
 #' @examples
-#' TSGMM_PP()
+#' TSGMM_c0()
 
 
-TSGMM_PP = function(yvec,subjectID,Zmat,Xmat,Tvec,N,mc='EC',covTypeVec=c(-1),betaI,r_c){
+TSGMM_PP = function(yvec,subjectID,Zmat,Xmat,Tvec,N,mc='EC',covTypeVec=c(-1),betaI=c(1),r_c=c(-1)){
+
 
 ####################
 # DEFINE CONSTANTS #
@@ -48,9 +49,12 @@ for(k in 1:Ktv)
 }
 }
 
+####################
+####################
 
-####################
-####################
+# CONSTRUCT betaI AND r_c IF NECESSARY #
+if(betaI == c(-1)){betaI = rep(0,(1+ncol(Zmat)+ncol(Xmat)))}
+
 
 
 
@@ -67,7 +71,7 @@ if(mc=='Types'){Lmax = 1*Tmax + K0*Tmax  + (Tmax^2)*K1 + Tmax*(Tmax+1)/2*K2 + Tm
 if(mc=='EC')
 {
 	alpha = 0.05/(Tmax^2)
-	types = validComb_PP(yvec,Zmat,Xmat,betaI,Tvec,alpha,r_c) 
+	types = validComb_EC_PP(yvec,Zmat,Xmat,betaI,Tvec,alpha,r_c) 
 	Lmax = 1*Tmax + K0*Tmax  + sum(types)
 }
 
@@ -110,7 +114,7 @@ QuadForm = function(beta){
 			D[i,j] = min(Count[i],Count[j])
 		}
 	}
-	W = ginv(VN / D)
+	W = MASS::ginv(VN / D)
 
 	# QUADRATIC FUNCTION TO BE OPTIMIZED #
 	QF = t(G) %*% W %*% G
@@ -178,10 +182,10 @@ for(i in 1:Lmax)
 Divisor = matrix(c(rep(Count,K)),length(Count),K)
 
 dBetaG = dBetaG / Divisor
-W = ginv(VN / D)
+W = MASS::ginv(VN / D)
 
 AsymptoticWeight = t(dBetaG) %*% W %*% dBetaG
-AsymptoticCovariance = (1/N)*ginv(AsymptoticWeight)
+AsymptoticCovariance = (1/N)*MASS::ginv(AsymptoticWeight)
 
 ########################################################################
 ########################################################################
