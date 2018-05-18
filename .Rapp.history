@@ -1,3 +1,150 @@
+rnorm(mean=c(12345),sd=3.5)
+rnorm(mean=c(1,2,3,4,5),sd=3.5)
+rnorm(n=1,mean=c(1,2,3,4,5),sd=3.5)
+rnorm(n=5,mean=c(1,2,3,4,5),sd=3.5)
+?rnorm
+# ASSUMED TRUTH ABOUT THE DATA ##
+#
+n=50#
+#
+# REGRESSION COEFFICIENTS ##
+beta0 = 2.5#
+beta1 = -1.6#
+beta2 = -3#
+beta3 = 4.5#
+beta4 = 1.3#
+beta5 = -4#
+#
+# RESPONSE VARIATION ##
+sigma = 3.5#
+#
+# PREDICTORS? ##
+m1 = 5#
+sd1 = 5#
+m2 = 0#
+sd2 = 2#
+m3 = 1#
+sd3 = 6#
+m4 = 10#
+sd4 = 0.5#
+m5 = 2#
+sd5 = 1
+x1=rnorm(n=n,mean=m1,sd=sd1)#
+	x2=rnorm(n=n,mean=m2,sd=sd2)#
+	x3=rnorm(n=n,mean=m3,sd=sd3)#
+	x4=rnorm(n=n,mean=m4,sd=sd4)#
+	x5=rnorm(n=n,mean=m5,sd=sd5)
+mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5
+mean
+y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)
+y
+library('ggplot2')#
+library('pwr')
+n=50#
+#
+# REGRESSION COEFFICIENTS ##
+beta0 = 2.5#
+beta1 = -1.6#
+beta2 = -3#
+beta3 = 4.5#
+beta4 = 1.3#
+beta5 = -4#
+#
+# RESPONSE VARIATION ##
+sigma = 3.5#
+#
+# PREDICTORS? ##
+m1 = 5#
+sd1 = 5#
+m2 = 0#
+sd2 = 2#
+m3 = 1#
+sd3 = 6#
+m4 = 10#
+sd4 = 0.5#
+m5 = 2#
+sd5 = 1
+M = 1000#
+#
+# CREATE SOMETHING TO SAVE RESULTS ##
+results = rep(0,M)#
+set.seed(12345)
+x1=rnorm(n=n,mean=m1,sd=sd1)#
+	x2=rnorm(n=n,mean=m2,sd=sd2)#
+	x3=rnorm(n=n,mean=m3,sd=sd3)#
+	x4=rnorm(n=n,mean=m4,sd=sd4)#
+	x5=rnorm(n=n,mean=m5,sd=sd5)#
+#
+	# GENERATE DATA FOR REPONSE ##
+	y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)
+model = lm(y~x1+x2+x3+x4+x5)
+model
+summary(model)
+str(model)
+str(summary(model))
+summary(model)$r.squared
+anova(model)
+str(anova(model))
+anova(model)$SumSq
+anova(model)$Sum_Sq
+anova(model)$Sum Sq
+anova(model)[2]
+anova(model)[2]$x4
+anova(model)[2][4]
+anova(model)[2,4]
+ss = anova(model)[2]
+dim(ss)
+ss[4]
+ss
+ss[4,2]
+str(ss)
+ss = as.vector(ss)
+ss[4]
+ss
+ss[x4]
+ss$x4
+anova(model)
+str(anova(model))
+anova(model)[[2]]
+anova(model)[[2]][4]
+model
+summary(model)
+str(summary(model))
+anova(model)
+anova(model)[[2]][6]
+anova(model)[[3]][6]
+?pf
+full = lm(y~x1+x2+x3+x4+x5)#
+	reducced = lm(y~x1+x2+x3)
+p = pf(q=((anova(reduced)[[2]][6] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)
+reduced = lm(y~x1+x2+x3)
+p = pf(q=((anova(reduced)[[2]][6] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)
+p
+n
+q=((anova(reduced)[[2]][6] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6])
+q
+((anova(reduced)[[2]][6] - anova(full)[[2]][6]) / 2)
+q=((anova(reduced)[[2]][4] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6])
+q
+p = pf(q=((anova(reduced)[[2]][4] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)
+p
+# RESPONSE VARIATION ##
+sigma = 10.5
+x1=rnorm(n=n,mean=m1,sd=sd1)#
+	x2=rnorm(n=n,mean=m2,sd=sd2)#
+	x3=rnorm(n=n,mean=m3,sd=sd3)#
+	x4=rnorm(n=n,mean=m4,sd=sd4)#
+	x5=rnorm(n=n,mean=m5,sd=sd5)#
+#
+	# GENERATE DATA FOR REPONSE ##
+	y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)#
+#
+	# PERFORM CHOSEN TEST, RECORD WHETHER REJECTED ##
+	full = lm(y~x1+x2+x3+x4+x5)#
+	reduced = lm(y~x1+x2+x3)#
+#
+	p = pf(q=((anova(reduced)[[2]][4] - anova(full)[[2]][6]) / 2)/(anova(full)[[3]][6]),df1=2,df2=n-6,lower.tail=FALSE)
+p
 # RESPONSE VARIATION ##
 sigma = 7.5
 x1=rnorm(n=n,mean=m1,sd=sd1)#
@@ -456,214 +603,23 @@ install.packages('devtools')
 devtools::install_github("flor3652/BigD")
 ?zt_irls
 ?install.packages
-library(ggplot2)#
-library(s20x)#
-library(lmerTest)
-setwd('/Users/trent.lalonde/Documents/Research/Research Projects/Collaborative - Applied/Student Activity/Data/')#
-StudentActivityData = read.csv("StudentActivityData.csv")
-StudentActivityData$date = as.Date(StudentActivityData$date,"%m/%d/%Y")
-MVPAMeans = aggregate(act_min_Evenson_mvpa~as.factor(activity)+as.factor(week),data=StudentActivityData,FUN=function(x)mean(x,na.rm=TRUE))
-MVPAMeans
-StudentActivityData$ReadingTotal = StudentActivityData$ReadingLevel + StudentActivityData$ReadingFluency + StudentActivityData$ReadingComprehension + StudentActivityData$ReadingStrategies + StudentActivityData$ReadingEffort#
-#
-StudentActivityData$MathTotal = StudentActivityData$MathComputation + StudentActivityData$MathConcepts + StudentActivityData$MathEffort#
-#
-StudentActivityData$WritingTotal = StudentActivityData$WritingMechanics + StudentActivityData$WritingContent + StudentActivityData$WritingEffort
-StudentActivityData$EthnicityBin = ifelse(StudentActivityData$Ethnicity == 1,1,0)
-Single = aggregate(act_min_Evenson_mvpa~masterID+Grade+Gender+Ethnicity+FRL+Teacher,StudentActivityData,mean)
-table(Single$Grade,Single$Teacher)
-SADataDaySimple = aggregate(act_min_Evenson_mvpa~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher+ReadingTotal+MathTotal+WritingTotal,StudentActivityData,sum,na.rm=FALSE)#
-ggplot(SADataDaySimple, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("MVPA") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
-ggplot(SADataDaySimple, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("MVPA") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
-SAData100 = SADataDaySimple[(which(SADataDaySimple$act_min_Evenson_mvpa<=100)),]
-dim(SADataDaySimple)
-dim(SAData100)
-DayModelSimple = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID),data=SADataDaySimple,REML=TRUE)
-summary(DayModelSimple)
-DayModelSimple = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,REML=TRUE)
-summary(DayModelSimple)
-?glmer
-DayModelSimple = Glmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=poisson,REML=TRUE)
-DayModelPoisson = glmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=poisson,REML=TRUE)
-warnings()
-ggplot(SAData100, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("MVPA") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
-# RANDOM TEACHER ##
-DayModel100 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SAData100,REML=TRUE)#
-#
-summary(DayModel100)
-# AS A RIGHT-SKEWED MODEL ##
-DayModelGamma = glmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=gamma,REML=TRUE)#
-#
-summary(DayModelGamma)
-?family
-DayModelGamma = glmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=Gamma,REML=TRUE)#
-#
-summary(DayModelGamma)
-summary(SADataDaySimple)
-SADataDaySimple$MVPA = SADataDaySimple$act_min_Evenson_mvpa+0.01#
-DayModelGamma = glmer(MVPA~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,family=Gamma,REML=TRUE)#
-#
-summary(DayModelGamma)
-SADataDaySimple$MVPA = SADataDaySimple$act_min_Evenson_mvpa+0.01#
-DayModelGamma = glmer(MVPA~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1|masterID),data=SADataDaySimple,family=Gamma)#
-#
-summary(DayModelGamma)
-13803.3/1505
-hist(SADataDaySimple$act_min_Evenson_mvpa)
-SADataDay = aggregate(act_min_Evenson_mvpa~masterID+StudyDay+Grade+Gender+EthnicityBin+FRL+post+Teacher+ReadingTotal+MathTotal+WritingTotal,StudentActivityData,sum,na.rm=FALSE)
-DayModel = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDay+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDay|masterID),data=SADataDay,REML=TRUE)
-DayModelSimple = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,REML=TRUE)#
-#
-summary(DayModelSimple)
-SEDDataDaySimple = aggregate(act_min_Matthew_sed~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher+ReadingTotal+MathTotal+WritingTotal,StudentActivityData,sum,na.rm=FALSE)
-SEDModelSimple = lmer(act_min_Matthew_sed~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SEDDataDaySimple,REML=TRUE)#
-#
-summary(SEDModelSimple)
-ggplot(SEDDataDaySimple, aes(x=StudyDaySimple,y=act_min_Matthew_sed)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of SED Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("SED") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
-setwd('/Users/trent.lalonde/Documents/Research/Research Projects/Collaborative - Applied/Student Activity/Data/')#
-StudentActivityData = read.csv("StudentActivityData.csv")
-summary(StudentActivityData)
-table(StudentActivityData$Grade)
-## MAKE DATE A DATE ###
-StudentActivityData$date = as.Date(StudentActivityData$date,"%m/%d/%Y")#
-#
-## FIX ETHNICITY ###
-StudentActivityData$EthnicityBin = ifelse(StudentActivityData$Ethnicity == 1,1,0)
-MVPADatak12 = aggregate(act_min_Evenson_mvpa~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher,StudentActivityData,sum,na.rm=FALSE)
-summary(MVPADatak12)
-ggplot(MVPADatak12, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("MVPA") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
-MVPAModelk12 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+(1+StudyDaySimple|masterID)+(1|Teacher),data=MVPADatak12,REML=TRUE)#
-#
-summary(MVPAModelk12)
-K12Data100 = MVPADatak12[(which(MVPADatak12$act_min_Evenson_mvpa<=100)),]#
-ggplot(MVPADatak12, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("MVPA") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
-ggplot(K12Data100, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("MVPA") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
-MVPAModelk12100 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+(1+StudyDaySimple|masterID)+(1|Teacher),data=K12Data100,REML=TRUE)#
-#
-summary(MVPAModelk12100)
-SEDDatak12 = aggregate(act_minMatthew_sed~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher,StudentActivityData,sum,na.rm=FALSE)
-SEDDatak12 = aggregate(act_min_Matthew_sed~masterID+StudyDaySimple+Grade+Gender+EthnicityBin+FRL+post+Teacher,StudentActivityData,sum,na.rm=FALSE)
-ggplot(SEDDatak12, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("MVPA") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
-ggplot(SEDDatak12, aes(x=StudyDaySimple,y=act_min_Matthew_sed)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of SED Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("SED") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))
-SEDModelk12 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+(1+StudyDaySimple|masterID)+(1|Teacher),data=SEDDatak12,REML=TRUE)#
-#
-summary(SEDModelk12)
-SEDModelk12 = lmer(act_min_Matthew_sed~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+(1+StudyDaySimple|masterID)+(1|Teacher),data=SEDDatak12,REML=TRUE)#
-#
-summary(SEDModelk12)
-# RANDOM TEACHER ##
-DayModelSimple = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SADataDaySimple,REML=TRUE)#
-#
-summary(DayModelSimple)
-setwd('/Users/trent.lalonde/Documents/Research/Research Projects/Collaborative - Applied/Student Activity/Summaries/')#
-pdf("PostPreMVPA.pdf")#
-ggplot(SADataDaySimple, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("MVPA") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))#
-dev.off()
-setwd('/Users/trent.lalonde/Documents/Research/Research Projects/Collaborative - Applied/Student Activity/Summaries/')#
-pdf("PostPreMVPA100.pdf")#
-ggplot(SAData100, aes(x=StudyDaySimple,y=act_min_Evenson_mvpa)) +#
-	geom_point(col='grey45') + #
-	geom_smooth(col='grey45') +#
-	ggtitle("Scatter Plot of MVPA Versus Study Day") + #
-	xlab("Day of Study (1-20)") + #
-	ylab("MVPA") +#
-	theme(axis.text=element_text(size=16), axis.title=element_text(size=20), plot.title=element_text(size=24))#
-dev.off()
-DayModel100 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SAData100,REML=TRUE)#
-#
-summary(DayModel100)
-# RANDOM TIME, TEACHER ##
-SEDModelSimple = lmer(act_min_Matthew_sed~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SEDDataDaySimple,REML=TRUE)#
-#
-summary(SEDModelSimple)
-MVPAMeans = aggregate(act_min_Evenson_mvpa~as.factor(activity)+as.factor(week),data=StudentActivityData,FUN=function(x)mean(x,na.rm=TRUE))
-MVPAMeans
-DayModel100 = lmer(act_min_Evenson_mvpa~as.factor(Gender)+as.factor(Grade)+as.factor(EthnicityBin)+as.factor(FRL)+StudyDaySimple+post+ReadingTotal+MathTotal+WritingTotal+(1+StudyDaySimple|masterID)+(1|Teacher),data=SAData100,REML=TRUE)#
-#
-summary(DayModel100)
-SADataLess100 = SADataDaySimple[(which(SADataDaySimple$act_min_Evenson_mvpa>100)),]
-summary(SADataLess100)
-SADataGreater100 = SADataDaySimple[(which(SADataDaySimple$act_min_Evenson_mvpa>100)),]
-summary(SADataGreater100)
-dim(SADataGreater100)
-table(SADataGreater100$Teacher)
-write.csv(SADataGreater100,file="Over100.csv")
-library(readstata13)
-setwd('/Users/trent.lalonde/Desktop/')#
-data = read.dta13("Collapsed Teacher 1 School 2 Friday May 12 2017.dta")
-summary(data)
-head(data)
-data2 = read.dta13("Collapsed Teacher 2 School 6 Monday May 8 2017.dta")
-head(data2)
-data3 = read.dta13("Collapsed Teacher 2 School 4 Frid May 12.dta")
-head(data3)
-data3[(1:15),]
-?family
-?family
-x = c(-1)
-x == c(-1)
-library(gee)
-install.packages("gee")
+exp(0.064)
+20*1.066
+exp(0.143)
+30*1.154
+200*160
+5000/250000
+736-256
+480/2
+715-575
+855-575
+1695-1275
+140*3
+3655-575
+16*28
 setwd('/Users/trent.lalonde/Documents/Research/Programs/R Packages/TSGMM/')
 library(devtools)
-use_package("gee")
+library(roxygen2)
+document()
+?HurdleGEE
+?TSGMM
