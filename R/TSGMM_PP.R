@@ -2,7 +2,7 @@
 
 #' Two-Step Generalized Method of Moments, Truncated Count Component of Longitudinal Hurdle Model
 #'
-#' This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for the zero-truncated count component ("positive Poisson") of a hurdle model for longitudinal excess zero count responses.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  Data must be organized by subject, and an intercept term is assumed.  The function outputs a list with parameter estimates betaHat along with parameter covariance estimates covEst.  
+#' This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for the zero-truncated count component ("positive Poisson") of a hurdle model for longitudinal excess zero count responses.  This is modeled similarly to a Positive Poisson Zero-Truncated Regression using a log link.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  Data must be organized by subject, and an intercept term is assumed.  The function outputs a list with parameter estimates betaHat along with parameter covariance estimates covEst.  
 #' @param y	The vector of positive count responses.  This vector must be organized by subject, and by time within subject ((sum(Tvec)) x 1).  
 #' @param subjectID	The vector of subject ID values for each response ((sum(Tvec)) x 1).  
 #' @param Zmat The design matrix for time-independent covariates ((sum(Tvec)) x K0).  
@@ -16,7 +16,7 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' TSGMM_c0()
+#' TSGMM_PP()
 
 
 TSGMM_PP = function(yvec,subjectID,Zmat,Xmat,Tvec,N,mc='EC',covTypeVec=c(-1),betaI=c(1),r_c=c(-1)){

@@ -2,7 +2,7 @@
 % Please edit documentation in R/validMCBer_Types.R
 \name{validMCBer_Types}
 \alias{validMCBer_Types}
-\title{Generalized Method of Moments Valid Moment Combinations for Longitudinal Bernoulli Responses, User-Defined Types}
+\title{Generalized Method of Moments Valid Moment Combinations for Longitudinal Binary Responses, User-Defined Types}
 \usage{
 validMCBer_Types(yvec, subjectIndex, Zmat, Xmat, covTypeVec, betaI, T, Tmax,
   Count)

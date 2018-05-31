@@ -2,7 +2,7 @@
 % Please edit documentation in R/validComb_EC_Nor.R
 \name{validComb_EC_Nor}
 \alias{validComb_EC_Nor}
-\title{Generalized Method of Moments Valid Moment Combinations for Longitudinal Normal Responses, using Extended Classification}
+\title{Generalized Method of Moments Valid Moment Combinations for Longitudinal Continuous Responses, using Extended Classification}
 \usage{
 validComb_EC_Nor(yvec, Zmat, Xmat, betaI, Tvec, alpha)
 }

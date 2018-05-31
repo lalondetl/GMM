@@ -1,6 +1,6 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Bernoulli Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Binary Responses, using Extended Classification
 #' 
 #' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments using the extended classification method, applied to longitudinal data with binary outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.

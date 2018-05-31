@@ -28,9 +28,9 @@ r_c The vector of residuals from hurdle GEE with independent working correlation
 \item{y}{The vector of positive count responses.  This vector must be organized by subject, and by time within subject ((sum(Tvec)) x 1).}
 }
 \description{
-This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for the zero-truncated count component ("positive Poisson") of a hurdle model for longitudinal excess zero count responses.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  Data must be organized by subject, and an intercept term is assumed.  The function outputs a list with parameter estimates betaHat along with parameter covariance estimates covEst.
+This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for the zero-truncated count component ("positive Poisson") of a hurdle model for longitudinal excess zero count responses.  This is modeled similarly to a Positive Poisson Zero-Truncated Regression using a log link.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  Data must be organized by subject, and an intercept term is assumed.  The function outputs a list with parameter estimates betaHat along with parameter covariance estimates covEst.
 }
 \examples{
-TSGMM_c0()
+TSGMM_PP()
 }
 \keyword{GMM}

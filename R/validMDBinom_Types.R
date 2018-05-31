@@ -1,10 +1,10 @@
 
 
-#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Continuous Responses, User-Defined Types
+#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Count (number of events from n trials) Responses, User-Defined Types
 #' 
-#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with continuous (normal) outcomes.  It allows for unbalanced data, and uses user-defined types of time-dependent covariates to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
-#' @param yvec The vector of responses, ordered by subject, time within subject.
-#' @param subjectIndex The location of the first index of subject i responses within yvec.  
+#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with count (0-n) outcomes.  It is assumed that the count represents the number of events from n identical trials, and that n is equal for all subjects and times.  This is modeled similarly to a Logistic Regression for Binomial responses.  It allows for unbalanced data, and uses user-defined types of time-dependent covariates to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
+#' @param ymat The matrix of responses, ordered by subject, time within subject.  The first column is the number of successes, the second the number of failures.  
+#' @param subjectIndex The location of the first index of subject i responses within ymat.  
 #' @param Zmat The design matrix for time-independent covariates.  
 #' @param Xmat The design matrix for time-dependent covariates.  
 #' @param covTypeVec The vector indicating the type of each time-dependent covariate.  
@@ -15,9 +15,9 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' validMDNor_Types()
+#' validMDBinom_Types()
 
-validMDNor_Types = function(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax){
+validMDBinom_Types = function(ymat,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax){
 
 ####################
 # DEFINE CONSTANTS #
@@ -53,7 +53,7 @@ Lmax = 1*Tmax + K0*Tmax  + (Tmax^2)*K1 + Tmax*(Tmax+1)/2*K2 + Tmax*K3 + Tmax*(Tm
 # CALCULATE VALUES FOR SUBJECT i #
 ##################################
 
-yvec_i = yvec[subjectIndex:(subjectIndex+T)]
+ymat_i = ymat[subjectIndex:(subjectIndex+T)]
 
 # CALCULATE MEAN AND SYSTEMATIC ESTIMATES FOR SUBJECT i #
 mu_i = rep(0,T)
@@ -67,9 +67,9 @@ for(t in 1:T)
 	if(K0==0){zx_it = c(1,xmat_it)}
 	else if(K0!=0){zx_it = c(1,zmat_it,xmat_it)}
 
-	# NOTE: THIS IS SPECIFIC TO THE NORMAL #
+	# NOTE: THIS IS SPECIFIC TO THE BERNOULLI #
 	eta_i[t] = zx_it %*% betaI
-	mu_i[t] = eta_i[t]
+	mu_i[t] = exp(eta_i[t])/(1+exp(eta_i[t]))
 }
 
 ##################################
@@ -83,7 +83,7 @@ for(t in 1:T)
 
 #########################################################
 #	DEFINE DERIVATIVE MATRICES FOR SUBJECT i	#
-#		UNIQUE TO NORMAL!!			##########################################################
+#		UNIQUE TO BERNOULLI!!			##########################################################
 
 
 ##	FIRST DERIVATIVE OF MEAN	##
@@ -94,7 +94,7 @@ for(t in 1:T)
 dCount = 1
 
 	# INTERCEPT #
-	dBetamu_i[t,dCount] = (1)
+	dBetamu_i[t,dCount] = (1)*mu_i[t]*(1-mu_i[t])
 	dCount = dCount+1
 
 	# TIC #
@@ -102,7 +102,7 @@ dCount = 1
 	{
 	for(j in 1:K0)
 	{
-		dBetamu_i[t,dCount] = (Zmat[subjectIndex+t-1,j])
+		dBetamu_i[t,dCount] = (Zmat[subjectIndex+t-1,j])*mu_i[t]*(1-mu_i[t])
 		dCount = dCount+1
 	}
 	}
@@ -110,21 +110,22 @@ dCount = 1
 	# TDC #
 	for(j in 1:ncol(Xmat))
 	{
-		dBetamu_i[t,dCount] = (Xmat[subjectIndex+t-1,j])
+		dBetamu_i[t,dCount] = (Xmat[subjectIndex+t-1,j])*mu_i[t]*(1-mu_i[t])
 		dCount = dCount+1
 	}
 }
 
 ##	PART OF SECOND DERIVATIVE OF MEAN	##
+##		(Xmat[i,t,j] OMITTED)		##
 
 d2Betamu_i_part = matrix(0,T,K)
-#for (t in 1:T)
-#{
-#	for (k in 1:K)
-#	{
-#		d2Betamu_i_part[t,k] = dBetamu_i[t,k]*(1-2*mu_i[t]) $ NEEDS WORK!! 0?? #
-#	}
-#}
+for (t in 1:T)
+{
+	for (k in 1:K)
+	{
+		d2Betamu_i_part[t,k] = dBetamu_i[t,k]*(1-2*mu_i[t])
+	}
+}
 
 
 
@@ -143,7 +144,7 @@ for(t in 1:T)
 	j = 1
 	for(k in 1:K)
 	{
-		dBetag_i[count,k] = (-1)*dBetamu_i[s,j]*dBetamu_i[t,k] + (1)*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+		dBetag_i[count,k] = (-1)*dBetamu_i[s,j]*dBetamu_i[t,k] + (1)*d2Betamu_i_part[s,k]*(ymat_i[t]-mu_i[t])
 	}
 	count = count+1
 }
@@ -161,7 +162,7 @@ for(j in 1:K0)
 		s=t
 		for(k in 1:K)
 		{
-			dBetag_i[count,k] = (-1)*dBetamu_i[s,1+j]*dBetamu_i[t,k] + (Zmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+			dBetag_i[count,k] = (-1)*dBetamu_i[s,1+j]*dBetamu_i[t,k] + (Zmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(ymat_i[t]-mu_i[t])
 		}
 		count = count+1
 	}
@@ -181,7 +182,7 @@ for (j in 1:Ktv)
 			{
 				for(k in 1:K)
 				{
-					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(ymat_i[t]-mu_i[t])
 				}
 				count = count + 1
 			}
@@ -200,7 +201,7 @@ for (j in 1:Ktv)
 			{
 				for(k in 1:K)
 				{
-					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(ymat_i[t]-mu_i[t])
 				}
 				count = count + 1
 			}
@@ -216,7 +217,7 @@ for (j in 1:Ktv)
 			t = s
 			for(k in 1:K)
 			{
-				dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+				dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(ymat_i[t]-mu_i[t])
 			}
 			count = count + 1
 		}
@@ -232,7 +233,7 @@ for (j in 1:Ktv)
 			{
 				for(k in 1:K)
 				{
-					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(ymat_i[t]-mu_i[t])
 				}
 				count = count + 1
 			}
@@ -245,7 +246,7 @@ for (j in 1:Ktv)
 # dBetag_i IS NOW A (L x K) MATRIX OF DERIVATIVES FOR SUBJECT i #
 
 dBetag_i
-} # END validMDNor_Types #
+} # END validMDBinom_Types #
 
 
 

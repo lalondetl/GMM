@@ -1,8 +1,8 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for one Subject of Longitudinal Continuous Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combinations for one Subject of Longitudinal Proportion Responses, using Extended Classification
 #' 
-#' This function calculates the values of the valid moment conditions for a single subject in a longitudinal study with continuous (normal) outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a vector of valid moment condition values for subject i, along with an updated count vector of the number of valid moment conditions.  
+#' This function calculates the values of the valid moment conditions for a single subject in a longitudinal study with proportion outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a vector of valid moment condition values for subject i, along with an updated count vector of the number of valid moment conditions.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.
 #' @param subjectIndex The location of the first index of subject i responses within yvec.  
 #' @param Zmat The design matrix for time-independent covariates.  
@@ -15,9 +15,9 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' validMCNor_EC()
+#' validMCBeta_EC()
 
-validMCNor_EC = function(yvec,subjectIndex,Zmat,Xmat,betaI,T,Tmax,Count,types){
+validMCBeta_EC = function(yvec,subjectIndex,Zmat,Xmat,betaI,T,Tmax,Count,types){
 
 ####################
 # DEFINE CONSTANTS #
@@ -52,9 +52,9 @@ for(t in 1:T)
 	if(K0==0){zx_it = c(1,xmat_it)}
 	else if(K0!=0){zx_it = c(1,zmat_it,xmat_it)}
 
-	# NOTE: THIS IS SPECIFIC TO THE NORMAL #
+	# NOTE: THIS IS SPECIFIC TO THE BETA #
 	eta_i[t] = zx_it %*% betaI
-	mu_i[t] = eta_i[t]
+	mu_i[t] = exp(eta_i[t])/(1+exp(eta_i[t]))
 }
 
 ##################################
@@ -73,11 +73,11 @@ for(t in 1:T)
 gEst_i = rep(0,Lmax)
 count = 1
 
-#NOTE: gEst_i function is specific to the Normal
+#NOTE: gEst_i function is specific to the Beta
 #Intercept term moments: identical for all times
 for(t in 1:T)
 {
-	gEst_i[count] = (yvec_i[t]-mu_i[t])
+	gEst_i[count] = (mu_i[t]/(1+exp(eta_i[t])))*(yvec_i[t]-mu_i[t])
 	Count[count] = Count[count]+1
 	count = count+1
 }
@@ -92,7 +92,7 @@ for(k in 1:K0)
 {
 	for(t in 1:T)
 	{
-		gEst_i[count] = Zmat[subjectIndex+t-1,k]*(yvec_i[t]-mu_i[t])
+		gEst_i[count] = (mu_i[t]/(1+exp(eta_i[t])))*Zmat[subjectIndex+t-1,k]*(yvec_i[t]-mu_i[t])
 		Count[count] = Count[count]+1
 		count = count+1
 	}
@@ -111,7 +111,7 @@ for (k in 1:Ktv)
 	for(s in 1:T){
 		for(t in 1:T){
 			if(types_k[s,t] == 1){
-				gEst_i[count] = Xmat[subjectIndex+s-1,k]*(yvec_i[t]-mu_i[t])
+				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(yvec_i[t]-mu_i[t])
 				Count[count] = Count[count]+1
 				count = count+1
 			}
@@ -131,7 +131,11 @@ for (k in 1:Ktv)
 
 list(gEst_i,Count)
 
-} # end validMCNor_EC #
+} # end validMCBeta_EC #
+
+
+
+
 
 
 

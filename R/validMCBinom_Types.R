@@ -1,9 +1,9 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Binary Responses, User-Defined Types
+#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Count (number of events from n trials) Responses, User-Defined Types
 #' 
-#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments with user-defined types of time-dependent covariates, applied to longitudinal data with binary outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
-#' @param yvec The vector of responses, ordered by subject, time within subject.
+#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments with user-defined types of time-dependent covariates, applied to longitudinal data with count (0-n) outcomes.  It is assumed that the count represents the number of events from n identical trials, and that n is equal for all subjects and times.  This is modeled similarly to a Logistic Regression for Binomial responses.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
+#' @param ymat The matrix of responses, ordered by subject, time within subject.  The first column is the number of successes, the second the number of failures.  
 #' @param Zmat The design matrix for time-independent covariates.  
 #' @param Xmat The design matrix for time-dependent covariates.  
 #' @param covTypeVec The vector indicating the type of each time-dependent covariate.  
@@ -14,10 +14,10 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' validMCBer_Types()
+#' validMCBinom_Types()
 
 
-validMCBer_Types = function(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax,Count){
+validMCBinom_Types = function(ymat,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax,Count){
 
 ####################
 # DEFINE CONSTANTS #
@@ -52,7 +52,7 @@ Lmax = 1*Tmax + K0*Tmax  + (Tmax^2)*K1 + Tmax*(Tmax+1)/2*K2 + Tmax*K3 + Tmax*(Tm
 # CALCULATE VALUES FOR SUBJECT i #
 ##################################
 
-yvec_i = yvec[subjectIndex:(subjectIndex+T)]
+ymat_i = ymat[subjectIndex:(subjectIndex+T)]
 
 # CALCULATE MEAN AND SYSTEMATIC ESTIMATES FOR SUBJECT i #
 mu_i = rep(0,T)
@@ -88,7 +88,7 @@ count = 1
 #Intercept term moments: identical for all times
 for(t in 1:T)
 {
-	gEst_i[count] = (mu_i[t]/(1+exp(eta_i[t])))*(yvec_i[t]-mu_i[t])
+	gEst_i[count] = (mu_i[t]/(1+exp(eta_i[t])))*(ymat_i[t]-mu_i[t])
 	Count[count] = Count[count]+1
 	count = count+1
 }
@@ -103,7 +103,7 @@ for(k in 1:K0)
 {
 	for(t in 1:T)
 	{
-		gEst_i[count] = (mu_i[t]/(1+exp(eta_i[t])))*Zmat[subjectIndex+t-1,k]*(yvec_i[t]-mu_i[t])
+		gEst_i[count] = (mu_i[t]/(1+exp(eta_i[t])))*Zmat[subjectIndex+t-1,k]*(ymat_i[t]-mu_i[t])
 		Count[count] = Count[count]+1
 		count = count+1
 	}
@@ -123,7 +123,7 @@ for (k in 1:Ktv)
 		{
 			for (t in 1:T)
 			{
-				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(yvec_i[t]-mu_i[t])
+				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(ymat_i[t]-mu_i[t])
 				Count[count] = Count[count]+1
 				count = count + 1
 			}
@@ -142,7 +142,7 @@ for (k in 1:Ktv)
 		{
 			for (t in 1:s)
 			{
-				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(yvec_i[t]-mu_i[t])
+				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(ymat_i[t]-mu_i[t])
 				Count[count] = Count[count]+1
 				count = count + 1
 			}
@@ -156,7 +156,7 @@ for (k in 1:Ktv)
 	{
 		for (s in 1:T)
 		{
-			gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(yvec_i[s]-mu_i[s])
+			gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(ymat_i[s]-mu_i[s])
 			Count[count] = Count[count]+1
 			count = count + 1
 		}
@@ -171,7 +171,7 @@ for (k in 1:Ktv)
 		{
 			for (s in 1:t)
 			{
-				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(yvec_i[t]-mu_i[t])
+				gEst_i[count] = (mu_i[s]/(1+exp(eta_i[s])))*Xmat[subjectIndex+s-1,k]*(ymat_i[t]-mu_i[t])
 				Count[count] = Count[count]+1
 				count = count + 1
 			}
@@ -187,7 +187,7 @@ for (k in 1:Ktv)
 
 list(gEst_i,Count)
 
-} # end validMCBer_Types #
+} # end validMCBinom_Types #
 
 
 

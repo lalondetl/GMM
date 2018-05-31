@@ -1,89 +1,3 @@
-rnorm(mean=c(12345),sd=3.5)
-rnorm(mean=c(1,2,3,4,5),sd=3.5)
-rnorm(n=1,mean=c(1,2,3,4,5),sd=3.5)
-rnorm(n=5,mean=c(1,2,3,4,5),sd=3.5)
-?rnorm
-# ASSUMED TRUTH ABOUT THE DATA ##
-#
-n=50#
-#
-# REGRESSION COEFFICIENTS ##
-beta0 = 2.5#
-beta1 = -1.6#
-beta2 = -3#
-beta3 = 4.5#
-beta4 = 1.3#
-beta5 = -4#
-#
-# RESPONSE VARIATION ##
-sigma = 3.5#
-#
-# PREDICTORS? ##
-m1 = 5#
-sd1 = 5#
-m2 = 0#
-sd2 = 2#
-m3 = 1#
-sd3 = 6#
-m4 = 10#
-sd4 = 0.5#
-m5 = 2#
-sd5 = 1
-x1=rnorm(n=n,mean=m1,sd=sd1)#
-	x2=rnorm(n=n,mean=m2,sd=sd2)#
-	x3=rnorm(n=n,mean=m3,sd=sd3)#
-	x4=rnorm(n=n,mean=m4,sd=sd4)#
-	x5=rnorm(n=n,mean=m5,sd=sd5)
-mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5
-mean
-y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)
-y
-library('ggplot2')#
-library('pwr')
-n=50#
-#
-# REGRESSION COEFFICIENTS ##
-beta0 = 2.5#
-beta1 = -1.6#
-beta2 = -3#
-beta3 = 4.5#
-beta4 = 1.3#
-beta5 = -4#
-#
-# RESPONSE VARIATION ##
-sigma = 3.5#
-#
-# PREDICTORS? ##
-m1 = 5#
-sd1 = 5#
-m2 = 0#
-sd2 = 2#
-m3 = 1#
-sd3 = 6#
-m4 = 10#
-sd4 = 0.5#
-m5 = 2#
-sd5 = 1
-M = 1000#
-#
-# CREATE SOMETHING TO SAVE RESULTS ##
-results = rep(0,M)#
-set.seed(12345)
-x1=rnorm(n=n,mean=m1,sd=sd1)#
-	x2=rnorm(n=n,mean=m2,sd=sd2)#
-	x3=rnorm(n=n,mean=m3,sd=sd3)#
-	x4=rnorm(n=n,mean=m4,sd=sd4)#
-	x5=rnorm(n=n,mean=m5,sd=sd5)#
-#
-	# GENERATE DATA FOR REPONSE ##
-	y = rnorm(n=n,mean=beta0+beta1*x1+beta2*x2+beta3*x3+beta4*x4+beta5*x5,sd=sigma)
-model = lm(y~x1+x2+x3+x4+x5)
-model
-summary(model)
-str(model)
-str(summary(model))
-summary(model)$r.squared
-anova(model)
 str(anova(model))
 anova(model)$SumSq
 anova(model)$Sum_Sq
@@ -617,9 +531,31 @@ exp(0.143)
 140*3
 3655-575
 16*28
-setwd('/Users/trent.lalonde/Documents/Research/Programs/R Packages/TSGMM/')
+250000-127000
+123000*0.85
+120000/0.85
+127000+142000
+0.85*300000
+-1270000
+255000-127000
+275000-127000
+exp(0.031)
+exp(0.031*4)
+0.031*4
+(1.031)^4
+(exp(0.031))^4
+1.031*1.031*1.031*1.031
+1.811*1.187
+1.15*1.17*2.16
+2018-1989
+18*28
+18*24
+18*32
+library(lme4)
+?glmer
+650+455+900+12+64*4
+78*6
 library(devtools)
 library(roxygen2)
+setwd('/Users/trent.lalonde/Documents/Research/Programs/R Packages/TSGMM/')
 document()
-?HurdleGEE
-?TSGMM

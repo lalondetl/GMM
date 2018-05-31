@@ -2,7 +2,7 @@
 % Please edit documentation in R/validMDNor_EC.R
 \name{validMDNor_EC}
 \alias{validMDNor_EC}
-\title{Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Normal Responses, using Extended Classification}
+\title{Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Continuous Responses, using Extended Classification}
 \usage{
 validMDNor_EC(yvec, subjectIndex, Zmat, Xmat, betaI, T, Tmax, types)
 }

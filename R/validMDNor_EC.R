@@ -1,6 +1,6 @@
 
 
-#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Normal Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Continuous Responses, using Extended Classification
 #' 
 #' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with continuous (normal) outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.

@@ -1,12 +1,12 @@
 
 
-#' Two-Step Generalized Method of Moments, Longitudinal Count Outcome
+#' Two-Step Generalized Method of Moments, Longitudinal Count (number of events from n trials) Outcome
 #'
-#' This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for longitudinal count (Poisson) responses.  This is modeled similarly to a Poisson Regression using a log link.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  Data must be organized by subject, and an intercept term is assumed.  The function outputs a list with parameter estimates betaHat along with parameter covariance estimates covEst.  
-#' @param y	The vector of count responses.  This vector must be organized by subject, and by time within subject ((sum(Tvec)) x 1).  
-#' @param subjectID	The vector of subject ID values for each response ((sum(Tvec)) x 1).  
-#' @param Zmat The design matrix for time-independent covariates ((sum(Tvec)) x K0).  
-#' @param Xmat The design matrix for time-dependent covariates ((sum(Tvec)) x Ktv).  
+#' This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for longitudinal count (0-n) responses.  It is assumed that the count represents the number of events from n identical trials, and that n is equal for all subjects and times.  This is modeled similarly to a Logistic Regression for Binomial responses.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  
+#' @param ymat The matrix of responses, ordered by subject, time within subject.  The first column is the number of successes, the second the number of failures.  
+#' @param subjectID The vector of subject ID values for each response.  
+#' @param Zmat The design matrix for time-independent covariates.  
+#' @param Xmat The design matrix for time-dependent covariates.  
 #' @param Tvec The vector of times for each subject.  
 #' @param N The number of subjects.  
 #' @param mc The method of identifying appropriate moment conditions, either 'EC' for extended classification (default) or 'Types' for user-identified types.  
@@ -14,10 +14,12 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' TSGMM_Poi()
+#' TSGMM_Binom()
 
 
-TSGMM_Poi = function(yvec,subjectID,Zmat,Xmat,Tvec,N,mc='EC',covTypeVec=c(-1)){
+
+
+TSGMM_Binom = function(ymat,subjectID,Zmat,Xmat,Tvec,N,mc='EC',covTypeVec=c(-1)){
 
 ####################
 # DEFINE CONSTANTS #
@@ -50,6 +52,7 @@ for(k in 1:Ktv)
 ####################
 
 
+
 ######################################
 # OBTAIN INITIAL PARAMETER ESTIMATES #
 ######################################
@@ -59,12 +62,10 @@ for(k in 1:Ktv)
 if(K0==0){ZX = Xmat}
 if(K0!=0){ZX = cbind(Zmat,Xmat)}
 
-betaI = gee::gee(yvec ~ ZX,id=subjectID,family=poisson,corstr="independence")$coefficients
+betaI = gee::gee(ymat ~ ZX,id=subjectID,family=binomial,corstr="independence")$coefficients
 
 ######################################
 ######################################
-
-
 
 
 ##########################################################
@@ -80,7 +81,7 @@ if(mc=='Types'){Lmax = 1*Tmax + K0*Tmax  + (Tmax^2)*K1 + Tmax*(Tmax+1)/2*K2 + Tm
 if(mc=='EC')
 {
 	alpha = 0.05/(Tmax^2)
-	types = validComb_EC_Poi(yvec,Zmat,Xmat,betaI,Tvec,alpha) 
+	types = validComb_EC_Ber(ymat,Zmat,Xmat,betaI,Tvec,alpha)
 	Lmax = 1*Tmax + K0*Tmax  + sum(types)
 }
 
@@ -98,12 +99,12 @@ QuadForm = function(beta){
 	VN = matrix(0,Lmax,Lmax)
 	Count = rep(0,Lmax) # Vector of denominators for G and VN #
 
-	# FILL G AND VN USING VALIDMCPP FOR EACH SUBJECT #
+	# FILL G AND VN USING VALIDMCBER FOR EACH SUBJECT #
 	for(i in 1:N)
 	{
 		subjectIndex = sum(Tvec[0:(i-1)])+1
-		if(mc=='EC'){Est_i = validMCPoi_EC(yvec,subjectIndex,Zmat,Xmat,beta,Tvec[i],Tmax,Count,types)}
-		if(mc=='Types'){Est_i = validMCPoi_Types(yvec,subjectIndex,Zmat,Xmat,covTypeVec,beta,Tvec[i],Tmax,Count)}
+		if(mc=='EC'){Est_i = validMCBer_EC(ymat,subjectIndex,Zmat,Xmat,beta,Tvec[i],Tmax,Count,types)}
+		if(mc=='Types'){Est_i = validMCBer_Types(ymat,subjectIndex,Zmat,Xmat,covTypeVec,beta,Tvec[i],Tmax,Count)}
 
 		gEst_i = Est_i[[1]]
 		Count = Est_i[[2]]
@@ -138,6 +139,7 @@ QuadForm = function(beta){
 
 
 
+
 ######################################################################################
 # GMM COEFFICIENTS ARE OBTAINED BY MINIMIZING QUADFORM, WITH BETAI AS INITIAL VALUES #
 ######################################################################################
@@ -155,7 +157,6 @@ betahat = optim(betaI, QuadForm)$par
 # VARIANCE ESTIMATE IS OBTAINED USING DERIVATIVES WITH RESPECT TO BETA #
 ########################################################################
 
-
 dBetaG = matrix(0,Lmax,K)
 VN = matrix(0,Lmax,Lmax)
 Count = rep(0,Lmax) # Vector of denominators for G and VN #
@@ -164,16 +165,15 @@ for(i in 1:N)
 {
 	subjectIndex = sum(Tvec[0:(i-1)])+1
 
-	if(mc=='EC'){Est_i = validMCPoi_EC(yvec,subjectIndex,Zmat,Xmat,betahat,Tvec[i],Tmax,Count,types)}
-	if(mc=='Types'){Est_i = validMCPoi_Types(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betahat,Tvec[i],Tmax,Count)}
+	if(mc=='EC'){Est_i = validMCBer_EC(ymat,subjectIndex,Zmat,Xmat,betahat,Tvec[i],Tmax,Count,types)}
+	if(mc=='Types'){Est_i = validMCBer_Types(ymat,subjectIndex,Zmat,Xmat,covTypeVec,betahat,Tvec[i],Tmax,Count)}
 
 	gEst_i = Est_i[[1]]
 	Count = Est_i[[2]]
 	VN = VN + gEst_i%*%t(gEst_i)
 
-	if(mc=='EC'){dBetagEst_i = validMDPoi_EC(yvec,subjectIndex,Zmat,Xmat,betahat,Tvec[i],Tmax,types)}
-	if(mc=='Types'){dBetagEst_i = validMDPoi_Types(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betahat,Tvec[i],Tmax)}
-
+	if(mc=='EC'){dBetagEst_i = validMDBer_EC(ymat,subjectIndex,Zmat,Xmat,betahat,Tvec[i],Tmax,types)}
+	if(mc=='Types'){dBetagEst_i = validMDBer_Types(ymat,subjectIndex,Zmat,Xmat,covTypeVec,betahat,Tvec[i],Tmax)}
 	dBetaG = dBetaG + dBetagEst_i
 }
 
@@ -202,6 +202,7 @@ AsymptoticCovariance = (1/N)*MASS::ginv(AsymptoticWeight)
 
 list(betaHat=betahat, covEst = AsymptoticCovariance)
 
-} # END TSGMM_Poi #
+} # END TSGMM_BINOM #
+
 
 

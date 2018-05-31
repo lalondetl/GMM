@@ -1,24 +1,23 @@
 
 
-#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Binary Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Proportion Responses, User-Defined Types
 #' 
-#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with binary outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
+#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with proportion outcomes.  It allows for unbalanced data, and uses user-defined types of time-dependent covariates to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.
 #' @param subjectIndex The location of the first index of subject i responses within yvec.  
 #' @param Zmat The design matrix for time-independent covariates.  
 #' @param Xmat The design matrix for time-dependent covariates.  
+#' @param covTypeVec The vector indicating the type of each time-dependent covariate.  
 #' @param betaI The current or initial estimates of the model parameters.  
 #' @param N The number of subjects.  
 #' @param T The number of time points for subject i.  
 #' @param Tmax The maximum number of times of observation among all subjects.  
-#' @param types A matrix indicating valid moment conditions for all time-dependent covariate parameters.  
 #' @keywords GMM
 #' @export
 #' @examples
-#' validMDBer_EC()
+#' validMDBeta_Types()
 
-
-validMDBer_EC = function(yvec,subjectIndex,Zmat,Xmat,betaI,T,Tmax,types){
+validMDBeta_Types = function(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax){
 
 ####################
 # DEFINE CONSTANTS #
@@ -29,8 +28,21 @@ else if(is.matrix(Zmat)){K0 = ncol(Zmat)}
 Ktv = ncol(Xmat)
 K = 1+K0+Ktv # TOTAL NUMBER OF PARAMETERS #
 
+K1 = 0
+K2 = 0
+K3 = 0
+K4 = 0
+
+for(k in 1:Ktv)
+{
+	if(covTypeVec[k]==1){K1 = K1+1}
+	if(covTypeVec[k]==2){K2 = K2+1}
+	if(covTypeVec[k]==3){K3 = K3+1}
+	if(covTypeVec[k]==4){K4 = K4+1}
+}
+
 # MAXIMUM NUMBER OF ESTIMATING EQUATIONS (PER SUBJECT) #
-Lmax = 1*Tmax + K0*Tmax  + sum(types)
+Lmax = 1*Tmax + K0*Tmax  + (Tmax^2)*K1 + Tmax*(Tmax+1)/2*K2 + Tmax*K3 + Tmax*(Tmax+1)/2*K4
 
 ####################
 ####################
@@ -55,7 +67,7 @@ for(t in 1:T)
 	if(K0==0){zx_it = c(1,xmat_it)}
 	else if(K0!=0){zx_it = c(1,zmat_it,xmat_it)}
 
-	# NOTE: THIS IS SPECIFIC TO THE BERNOULLI #
+	# NOTE: THIS IS SPECIFIC TO THE BETA #
 	eta_i[t] = zx_it %*% betaI
 	mu_i[t] = exp(eta_i[t])/(1+exp(eta_i[t]))
 }
@@ -71,7 +83,7 @@ for(t in 1:T)
 
 #########################################################
 #	DEFINE DERIVATIVE MATRICES FOR SUBJECT i	#
-#		UNIQUE TO BERNOULLI!!			##########################################################
+#		UNIQUE TO BETA!!						##########################################################
 
 
 ##	FIRST DERIVATIVE OF MEAN	##
@@ -104,7 +116,7 @@ dCount = 1
 }
 
 ##	PART OF SECOND DERIVATIVE OF MEAN	##
-#		(Xmat[i,t,j] OMITTED)		##
+##		(Xmat[i,t,j] OMITTED)		##
 
 d2Betamu_i_part = matrix(0,T,K)
 for (t in 1:T)
@@ -162,11 +174,31 @@ for(j in 1:K0)
 ## TDC EE'S: CONDITION ON TYPE OF TDC ##
 for (j in 1:Ktv)
 {
-	types_j = types[,((Tmax*(j-1)+1):(Tmax*(j-1)+Tmax))]
-
-	for(s in 1:T){
-		for(t in 1:T){
-			if(types_j[s,t] == 1){
+ 	if(covTypeVec[j]==1) #TYPE I
+	{
+		for (s in 1:T)
+		{
+			for (t in 1:T)
+			{
+				for(k in 1:K)
+				{
+					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+				}
+				count = count + 1
+			}
+			# UPDATE COUNT FOR MISSING TIMES #
+			count = count + (Tmax-T);
+		}
+		# UPDATE COUNT FOR MISSING TIMES #
+		count = count + Tmax*(Tmax-T);
+	}
+	
+	else if(covTypeVec[j]==2) # TYPE II
+	{
+		for (s in 1:T)
+		{
+			for (t in 1:s)
+			{
 				for(k in 1:K)
 				{
 					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
@@ -174,21 +206,49 @@ for (j in 1:Ktv)
 				count = count + 1
 			}
 		}
-	
 		# UPDATE COUNT FOR MISSING TIMES #
-		if(T<Tmax){count = count + sum(types_j[s,((T+1):Tmax)])}
+		count = count + (1/2)*(Tmax*(Tmax+1)-T*(T+1))
 	}
 
-	# UPDATE COUNT FOR MISSING TIMES #
-	if(T<Tmax){count = count + sum(types_j[((T+1):Tmax),])}
+	else if(covTypeVec[j]==3) # TYPE III
+	{
+		for (s in 1:T)
+		{
+			t = s
+			for(k in 1:K)
+			{
+				dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+			}
+			count = count + 1
+		}
+		# UPDATE COUNT FOR MISSING TIMES #		
+		count = count + (Tmax-T)
+	}
 
-} # END TIME-DEPENDENT COVARIATE DERIVATIVES
-
+	else # TYPE IV
+	{
+		for (t in 1:T)
+		{
+			for (s in 1:t)
+			{
+				for(k in 1:K)
+				{
+					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+				}
+				count = count + 1
+			}
+		}
+		# UPDATE COUNT FOR MISSING TIMES #
+		count = count + (1/2)*(Tmax*(Tmax+1)-T*(T+1))
+	}
+} # END TDC EE'S #
 
 # dBetag_i IS NOW A (L x K) MATRIX OF DERIVATIVES FOR SUBJECT i #
 
 dBetag_i
-} # END validMDBer_EC #
+} # END validMDBeta_Types #
+
+
 
 
 

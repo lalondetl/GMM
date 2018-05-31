@@ -1,8 +1,8 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Binary Responses, User-Defined Types
+#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Proportion Responses, User-Defined Types
 #' 
-#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments with user-defined types of time-dependent covariates, applied to longitudinal data with binary outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
+#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments with user-defined types of time-dependent covariates, applied to longitudinal data with proportion outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.
 #' @param Zmat The design matrix for time-independent covariates.  
 #' @param Xmat The design matrix for time-dependent covariates.  
@@ -14,10 +14,10 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' validMCBer_Types()
+#' validMCBeta_Types()
 
 
-validMCBer_Types = function(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax,Count){
+validMCBeta_Types = function(yvec,subjectIndex,Zmat,Xmat,covTypeVec,betaI,T,Tmax,Count){
 
 ####################
 # DEFINE CONSTANTS #
@@ -66,7 +66,7 @@ for(t in 1:T)
 	if(K0==0){zx_it = c(1,xmat_it)}
 	else if(K0!=0){zx_it = c(1,zmat_it,xmat_it)}
 
-	# NOTE: THIS IS SPECIFIC TO THE BERNOULLI #
+	# NOTE: THIS IS SPECIFIC TO THE BETA #
 	eta_i[t] = zx_it %*% betaI
 	mu_i[t] = exp(eta_i[t])/(1+exp(eta_i[t]))
 }
@@ -84,7 +84,7 @@ for(t in 1:T)
 gEst_i = rep(0,Lmax)
 count = 1
 
-#NOTE: gEst_i function is specific to the Bernoulli / Binomial
+#NOTE: gEst_i function is specific to the Beta
 #Intercept term moments: identical for all times
 for(t in 1:T)
 {
@@ -187,7 +187,7 @@ for (k in 1:Ktv)
 
 list(gEst_i,Count)
 
-} # end validMCBer_Types #
+} # end validMCBeta_Types #
 
 
 

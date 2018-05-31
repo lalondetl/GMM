@@ -1,6 +1,6 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Normal Responses, User-Defined Types
+#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Continuous Responses, User-Defined Types
 #' 
 #' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments with user-defined types of time-dependent covariates, applied to longitudinal data with continuous (normal) outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.

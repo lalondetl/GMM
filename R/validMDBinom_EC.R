@@ -1,10 +1,10 @@
 
 
-#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Binary Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Count (number of events from n trials) Responses, using Extended Classification
 #' 
-#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with binary outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
-#' @param yvec The vector of responses, ordered by subject, time within subject.
-#' @param subjectIndex The location of the first index of subject i responses within yvec.  
+#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with count (0-n) outcomes.  It is assumed that the count represents the number of events from n identical trials, and that n is equal for all subjects and times.  This is modeled similarly to a Logistic Regression for Binomial responses.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
+#' @param ymat The matrix of responses, ordered by subject, time within subject.  The first column is the number of successes, the second the number of failures.  
+#' @param subjectIndex The location of the first index of subject i responses within ymat.  
 #' @param Zmat The design matrix for time-independent covariates.  
 #' @param Xmat The design matrix for time-dependent covariates.  
 #' @param betaI The current or initial estimates of the model parameters.  
@@ -15,10 +15,10 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' validMDBer_EC()
+#' validMDBinom_EC()
 
 
-validMDBer_EC = function(yvec,subjectIndex,Zmat,Xmat,betaI,T,Tmax,types){
+validMDBinom_EC = function(ymat,subjectIndex,Zmat,Xmat,betaI,T,Tmax,types){
 
 ####################
 # DEFINE CONSTANTS #
@@ -41,7 +41,7 @@ Lmax = 1*Tmax + K0*Tmax  + sum(types)
 # CALCULATE VALUES FOR SUBJECT i #
 ##################################
 
-yvec_i = yvec[subjectIndex:(subjectIndex+T)]
+ymat_i = ymat[subjectIndex:(subjectIndex+T)]
 
 # CALCULATE MEAN AND SYSTEMATIC ESTIMATES FOR SUBJECT i #
 mu_i = rep(0,T)
@@ -132,7 +132,7 @@ for(t in 1:T)
 	j = 1
 	for(k in 1:K)
 	{
-		dBetag_i[count,k] = (-1)*dBetamu_i[s,j]*dBetamu_i[t,k] + (1)*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+		dBetag_i[count,k] = (-1)*dBetamu_i[s,j]*dBetamu_i[t,k] + (1)*d2Betamu_i_part[s,k]*(ymat_i[t]-mu_i[t])
 	}
 	count = count+1
 }
@@ -150,7 +150,7 @@ for(j in 1:K0)
 		s=t
 		for(k in 1:K)
 		{
-			dBetag_i[count,k] = (-1)*dBetamu_i[s,1+j]*dBetamu_i[t,k] + (Zmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+			dBetag_i[count,k] = (-1)*dBetamu_i[s,1+j]*dBetamu_i[t,k] + (Zmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(ymat_i[t]-mu_i[t])
 		}
 		count = count+1
 	}
@@ -169,7 +169,7 @@ for (j in 1:Ktv)
 			if(types_j[s,t] == 1){
 				for(k in 1:K)
 				{
-					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(yvec_i[t]-mu_i[t])
+					dBetag_i[count,k] = (-1)*dBetamu_i[s,1+K0+j]*dBetamu_i[t,k] + (Xmat[(subjectIndex+s-1),j])*d2Betamu_i_part[s,k]*(ymat_i[t]-mu_i[t])
 				}
 				count = count + 1
 			}
@@ -188,7 +188,7 @@ for (j in 1:Ktv)
 # dBetag_i IS NOW A (L x K) MATRIX OF DERIVATIVES FOR SUBJECT i #
 
 dBetag_i
-} # END validMDBer_EC #
+} # END validMDBinom_EC #
 
 
 

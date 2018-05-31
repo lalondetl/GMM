@@ -1,9 +1,9 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Continuous Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Count (number of events from n trials) Responses, using Extended Classification
 #' 
-#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments using the extended classification method, applied to longitudinal data with continuous (normal) outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
-#' @param yvec The vector of responses, ordered by subject, time within subject.
+#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments using the extended classification method, applied to longitudinal data with count (0-n) outcomes.  It is assumed that the count represents the number of events from n identical trials, and that n is equal for all subjects and times.  This is modeled similarly to a Logistic Regression for Binomial responses.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
+#' @param ymat The matrix of responses, ordered by subject, time within subject.  The first column is the number of successes, the second the number of failures.  
 #' @param Zmat The design matrix for time-independent covariates.  
 #' @param Xmat The design matrix for time-dependent covariates.  
 #' @param betaI The current or initial estimates of the model parameters.  
@@ -12,9 +12,9 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' validComb_EC_Nor()
+#' validComb_EC_Binom()
 
-validComb_EC_Nor = function(yvec,Zmat,Xmat,betaI,Tvec,alpha){
+validComb_EC_Binom = function(ymat,Zmat,Xmat,betaI,Tvec,alpha){
 
 ####################
 # DEFINE CONSTANTS #
@@ -28,7 +28,7 @@ K = 1+K0+Ktv # TOTAL NUMBER OF PARAMETERS #
 Tmax = max(Tvec)
 N = length(Tvec)
 
-TimePoint = rep(0,length(yvec))
+TimePoint = rep(0,length(ymat))
 subjectIndex = 1
 for(i in 1:N)
 {
@@ -45,16 +45,16 @@ for(i in 1:N)
 ############################
 
 # MEAN AND SYSTEMATIC ESTIMATES #
-# NOTE: THIS IS SPECIFIC TO THE NORMAL #
+# NOTE: THIS IS SPECIFIC TO THE BERNOULLI #
 
 if(K0!=0){ZX = cbind(rep(1,nrow(Xmat)),Zmat,Xmat)}
 if(K0==0){ZX = cbind(rep(1,nrow(Xmat)),Xmat)}
 
 eta = ZX %*% betaI
-mu = eta
+mu = exp(eta)/(1+exp(eta))
 
 # RESIDUALS #
-r_raw = yvec - mu
+r_raw = ymat - mu
 r = vector(mode="list",length=Tmax)
 for(t in 1:Tmax)
 {
@@ -73,7 +73,7 @@ types = matrix(0,Tmax,Tmax*Ktv)
 for(j in 1:Ktv)
 {
 	# FIND DERIVATIVES #
-	dBetamu_j_raw = Xmat[,j] 
+	dBetamu_j_raw = mu*(1-mu)*Xmat[,j] 
 	d_j = vector(mode="list",length=Tmax)
 
 	for(t in 1:Tmax)
@@ -118,7 +118,7 @@ for(j in 1:Ktv)
 
 types
 
-} # END validComb_EC_Nor #
+} # END validComb_EC_Binom #
 
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/validComb_EC_Ber.R
 \name{validComb_EC_Ber}
 \alias{validComb_EC_Ber}
-\title{Generalized Method of Moments Valid Moment Combinations for Longitudinal Bernoulli Responses, using Extended Classification}
+\title{Generalized Method of Moments Valid Moment Combinations for Longitudinal Binary Responses, using Extended Classification}
 \usage{
 validComb_EC_Ber(yvec, Zmat, Xmat, betaI, Tvec, alpha)
 }

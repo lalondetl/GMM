@@ -1,8 +1,8 @@
 
 
-#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Binary Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Proportion Responses, using Extended Classification
 #' 
-#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with binary outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
+#' This function calculates the values of the derivatives of all valid moment conditions for a single subject in a longitudinal study with proportion outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a matrix of derivatives for all valid moment condition for subject i.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.
 #' @param subjectIndex The location of the first index of subject i responses within yvec.  
 #' @param Zmat The design matrix for time-independent covariates.  
@@ -15,10 +15,10 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' validMDBer_EC()
+#' validMDBeta_EC()
 
 
-validMDBer_EC = function(yvec,subjectIndex,Zmat,Xmat,betaI,T,Tmax,types){
+validMDBeta_EC = function(yvec,subjectIndex,Zmat,Xmat,betaI,T,Tmax,types){
 
 ####################
 # DEFINE CONSTANTS #
@@ -55,7 +55,7 @@ for(t in 1:T)
 	if(K0==0){zx_it = c(1,xmat_it)}
 	else if(K0!=0){zx_it = c(1,zmat_it,xmat_it)}
 
-	# NOTE: THIS IS SPECIFIC TO THE BERNOULLI #
+	# NOTE: THIS IS SPECIFIC TO THE BETA #
 	eta_i[t] = zx_it %*% betaI
 	mu_i[t] = exp(eta_i[t])/(1+exp(eta_i[t]))
 }
@@ -71,7 +71,7 @@ for(t in 1:T)
 
 #########################################################
 #	DEFINE DERIVATIVE MATRICES FOR SUBJECT i	#
-#		UNIQUE TO BERNOULLI!!			##########################################################
+#		UNIQUE TO BETA!!						##########################################################
 
 
 ##	FIRST DERIVATIVE OF MEAN	##
@@ -188,7 +188,7 @@ for (j in 1:Ktv)
 # dBetag_i IS NOW A (L x K) MATRIX OF DERIVATIVES FOR SUBJECT i #
 
 dBetag_i
-} # END validMDBer_EC #
+} # END validMDBeta_EC #
 
 
 

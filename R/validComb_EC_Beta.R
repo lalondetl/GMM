@@ -1,8 +1,8 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Continuous Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combinations for Longitudinal Proportion Responses, using Extended Classification
 #' 
-#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments using the extended classification method, applied to longitudinal data with continuous (normal) outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
+#' This function calculates the values of valid moment combinations for two-step Generalized Method of Moments using the extended classification method, applied to longitudinal data with proportion outcomes.  It allows for unbalanced longitudinal data, meaning subjects can be observed for different numbers of times.  The function returns a vector "types" indicating validity of different moments conditions.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.
 #' @param Zmat The design matrix for time-independent covariates.  
 #' @param Xmat The design matrix for time-dependent covariates.  
@@ -12,9 +12,9 @@
 #' @keywords GMM
 #' @export
 #' @examples
-#' validComb_EC_Nor()
+#' validComb_EC_Beta()
 
-validComb_EC_Nor = function(yvec,Zmat,Xmat,betaI,Tvec,alpha){
+validComb_EC_Beta = function(yvec,Zmat,Xmat,betaI,Tvec,alpha){
 
 ####################
 # DEFINE CONSTANTS #
@@ -45,13 +45,13 @@ for(i in 1:N)
 ############################
 
 # MEAN AND SYSTEMATIC ESTIMATES #
-# NOTE: THIS IS SPECIFIC TO THE NORMAL #
+# NOTE: THIS IS SPECIFIC TO THE BETA #
 
 if(K0!=0){ZX = cbind(rep(1,nrow(Xmat)),Zmat,Xmat)}
 if(K0==0){ZX = cbind(rep(1,nrow(Xmat)),Xmat)}
 
 eta = ZX %*% betaI
-mu = eta
+mu = exp(eta)/(1+exp(eta))
 
 # RESIDUALS #
 r_raw = yvec - mu
@@ -73,7 +73,7 @@ types = matrix(0,Tmax,Tmax*Ktv)
 for(j in 1:Ktv)
 {
 	# FIND DERIVATIVES #
-	dBetamu_j_raw = Xmat[,j] 
+	dBetamu_j_raw = mu*(1-mu)*Xmat[,j] 
 	d_j = vector(mode="list",length=Tmax)
 
 	for(t in 1:Tmax)
@@ -118,7 +118,7 @@ for(j in 1:Ktv)
 
 types
 
-} # END validComb_EC_Nor #
+} # END validComb_EC_Beta #
 
 
 

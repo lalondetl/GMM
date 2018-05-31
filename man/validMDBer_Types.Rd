@@ -2,7 +2,7 @@
 % Please edit documentation in R/validMDBer_Types.R
 \name{validMDBer_Types}
 \alias{validMDBer_Types}
-\title{Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Bernoulli Responses, User-Defined Types}
+\title{Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Binary Responses, User-Defined Types}
 \usage{
 validMDBer_Types(yvec, subjectIndex, Zmat, Xmat, covTypeVec, betaI, T, Tmax)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/validMCNor_Types.R
 \name{validMCNor_Types}
 \alias{validMCNor_Types}
-\title{Generalized Method of Moments Valid Moment Combinations for Longitudinal Normal Responses, User-Defined Types}
+\title{Generalized Method of Moments Valid Moment Combinations for Longitudinal Continuous Responses, User-Defined Types}
 \usage{
 validMCNor_Types(yvec, subjectIndex, Zmat, Xmat, covTypeVec, betaI, T, Tmax,
   Count)

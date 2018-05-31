@@ -5,10 +5,10 @@
 \title{Two-Step Generalized Method of Moments, Longitudinal Outcome}
 \usage{
 TSGMM(yvec, subjectID, Zmat, Xmat, Tvec, N, mc = "EC", covTypeVec = c(-1),
-  family = "gaussian")
+  response = "continuous")
 }
 \arguments{
-\item{yvec}{The vector of responses, ordered by subject, time within subject.}
+\item{yvec}{The vector of responses, ordered by subject, time within subject.  If the response type is 'count-events' (similar to Binomial data) the response is assumed to be a matrix with two columns: the first column will be the count of successes (or events), and the second column will be the count of failures (or non-events).}
 
 \item{subjectID}{The vector of subject ID values for each response.}
 
@@ -24,10 +24,10 @@ TSGMM(yvec, subjectID, Zmat, Xmat, Tvec, N, mc = "EC", covTypeVec = c(-1),
 
 \item{covTypeVec}{The vector indicating the type of each time-dependent covariate, according to the order of the columns of Xmat.}
 
-\item{family}{The family indicates the response type, and follows standard R family notation.}
+\item{response}{The response type, either 'continuous', 'binary', 'proportion', 'count-events', 'count', 'positive-count', 'hurdle', or 'zi'.}
 }
 \description{
-This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for longitudinal data.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.
+This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for longitudinal data.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  While the GMM estimation method does not require a data-generating process, and therefore response are not assumed to be distributed according to known distributions, data response types can loosely be associated with traditional response distributions.  These include continuous outcomes (similar to Normal models), binary outcomes (similar to Bernoulli logistic models), proportions (similar to Beta regression), count events (similar to Binomial logistic models), counts (similar to Poisson regression), positive-counts (similar to Positive Poisson regression), hurdle outcomes (similar to Hurdle Poisson regression), and zero-inflated outomes (similar to Zero-Inflated Poisson models).
 }
 \examples{
 TSGMM()

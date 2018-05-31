@@ -1,8 +1,8 @@
 
 
-#' Two-Step Generalized Method of Moments, Longitudinal Normal Outcome
+#' Two-Step Generalized Method of Moments, Longitudinal Continuous Outcome
 #'
-#' This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for longitudinal continuous (normal) responses.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  
+#' This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for longitudinal continuous (normal) responses.  This is modeled similarly to a Normal Linear Regression.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.
 #' @param subjectID The vector of subject ID values for each response.  
 #' @param Zmat The design matrix for time-independent covariates.  

@@ -1,6 +1,6 @@
 
 
-#' Generalized Method of Moments Valid Moment Combinations for one Subject of Longitudinal Bernoulli Responses, using Extended Classification
+#' Generalized Method of Moments Valid Moment Combinations for one Subject of Longitudinal Binary Responses, using Extended Classification
 #' 
 #' This function calculates the values of the valid moment conditions for a single subject in a longitudinal study with binary outcomes.  It allows for unbalanced data, and uses the extended classification method to determine validity of moment conditions.  The function returns a vector of valid moment condition values for subject i, along with an updated count vector of the number of valid moment conditions.  
 #' @param yvec The vector of responses, ordered by subject, time within subject.

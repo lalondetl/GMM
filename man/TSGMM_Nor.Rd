@@ -2,7 +2,7 @@
 % Please edit documentation in R/TSGMM_Nor.R
 \name{TSGMM_Nor}
 \alias{TSGMM_Nor}
-\title{Two-Step Generalized Method of Moments, Longitudinal Normal Outcome}
+\title{Two-Step Generalized Method of Moments, Longitudinal Continuous Outcome}
 \usage{
 TSGMM_Nor(yvec, subjectID, Zmat, Xmat, Tvec, N, mc = "EC",
   covTypeVec = c(-1))
@@ -25,7 +25,7 @@ TSGMM_Nor(yvec, subjectID, Zmat, Xmat, Tvec, N, mc = "EC",
 \item{covTypeVec}{The vector indicating the type of each time-dependent covariate, according to the order of the columns of Xmat.}
 }
 \description{
-This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for longitudinal continuous (normal) responses.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.
+This function calculates the Generalized Method of Moments (GMM) parameter estimates and standard errors for longitudinal continuous (normal) responses.  This is modeled similarly to a Normal Linear Regression.  The function allows for unbalanced data, meaning subjects can have different numbers of times of observation.  Both time-independent covariates and time-dependent covariates can be accommodated.  Time-dependent covariates can be handled either by specifying the type of each time-dependent covariate, or by allowing the data to determine appropriate moment conditions through the extended classification method.
 }
 \examples{
 TSGMM_Nor()

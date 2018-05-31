@@ -2,7 +2,7 @@
 % Please edit documentation in R/validMCNor_EC.R
 \name{validMCNor_EC}
 \alias{validMCNor_EC}
-\title{Generalized Method of Moments Valid Moment Combinations for one Subject of Longitudinal Normal Responses, using Extended Classification}
+\title{Generalized Method of Moments Valid Moment Combinations for one Subject of Longitudinal Continuous Responses, using Extended Classification}
 \usage{
 validMCNor_EC(yvec, subjectIndex, Zmat, Xmat, betaI, T, Tmax, Count, types)
 }

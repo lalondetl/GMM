@@ -2,7 +2,7 @@
 % Please edit documentation in R/validMDNor_Types.R
 \name{validMDNor_Types}
 \alias{validMDNor_Types}
-\title{Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Normal Responses, User-Defined Types}
+\title{Generalized Method of Moments Valid Moment Combination Derivatives for one Subject of Longitudinal Continuous Responses, User-Defined Types}
 \usage{
 validMDNor_Types(yvec, subjectIndex, Zmat, Xmat, covTypeVec, betaI, T, Tmax)
 }
